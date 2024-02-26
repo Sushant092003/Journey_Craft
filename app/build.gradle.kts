@@ -1,6 +1,7 @@
 plugins {
     id("com.android.application")
     id("com.google.gms.google-services")
+    id("org.jetbrains.kotlin.android")
 }
 
 android {
@@ -9,7 +10,7 @@ android {
 
     defaultConfig {
         applicationId = "com.gmail_bssushant2003.journeycraft"
-        minSdk = 24
+        minSdk = 25
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -26,6 +27,12 @@ android {
             )
         }
     }
+
+    // Set JVM target version for Kotlin compilation
+    kotlinOptions {
+        jvmTarget = "1.8" // Set your desired JVM target version for Kotlin
+    }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8

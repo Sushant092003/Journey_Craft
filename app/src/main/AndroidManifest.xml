@@ -15,15 +15,17 @@
         android:theme="@style/Theme.JourneyCraft"
         tools:targetApi="31">
         <activity
+            android:name=".MainActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".LandingActivity"
             android:exported="true">
-
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
         </activity>
         <activity
             android:name=".VerificationOTPActivity"
@@ -34,13 +36,7 @@
             android:name=".SendOTPActivity"
             android:exported="false"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize">
-
-        </activity>
-        <activity
-            android:name=".MainActivity"
-            android:exported="false"
-            android:screenOrientation="portrait"></activity>
+            android:windowSoftInputMode="adjustResize"></activity>
     </application>
 
 </manifest>
