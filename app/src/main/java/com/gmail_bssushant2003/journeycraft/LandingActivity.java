@@ -9,6 +9,8 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 
+import com.google.firebase.auth.FirebaseAuth;
+
 public class LandingActivity extends AppCompatActivity {
 
     @Override
@@ -23,9 +25,16 @@ public class LandingActivity extends AppCompatActivity {
         buttonLetsGo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(LandingActivity.this,SendOTPActivity.class);
-                startActivity(intent);
-                finish();
+                if(FirebaseAuth.getInstance().getCurrentUser() != null){
+                    Intent intent = new Intent(LandingActivity.this, DestinationListActivity.class);
+                    startActivity(intent);
+                    finish();
+                }
+                else {
+                    Intent intent = new Intent(LandingActivity.this, SendOTPActivity.class);
+                    startActivity(intent);
+                    finish();
+                }
             }
         });
     }

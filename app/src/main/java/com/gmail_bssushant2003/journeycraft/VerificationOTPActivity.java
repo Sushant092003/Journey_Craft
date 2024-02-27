@@ -37,6 +37,7 @@ public class VerificationOTPActivity extends AppCompatActivity {
         getWindow().setStatusBarColor(getResources().getColor(R.color.white, getTheme()));
 
 
+
         TextView textMobile = findViewById(R.id.textMobile);
         textMobile.setText(String.format(
                 "+91-%s",getIntent().getStringExtra("mobile")
@@ -94,7 +95,7 @@ public class VerificationOTPActivity extends AppCompatActivity {
                                     progressBar.setVisibility(View.GONE);
                                     buttonVerify.setVisibility(View.VISIBLE);
                                     if(task.isSuccessful()){
-                                        Intent intent = new Intent(getApplicationContext(),MainActivity.class);
+                                        Intent intent = new Intent(getApplicationContext(),DestinationListActivity.class);
                                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                         startActivity(intent);
                                     }else{
