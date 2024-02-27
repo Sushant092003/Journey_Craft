@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -23,6 +24,8 @@ public class SendOTPActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_send_otpactivity);
+
+        getWindow().setStatusBarColor(getResources().getColor(R.color.white, getTheme()));
 
         final EditText inputMobile = findViewById(R.id.inputMobile);
         Button buttonGetOTP = findViewById(R.id.buttonOTP);
@@ -57,6 +60,7 @@ public class SendOTPActivity extends AppCompatActivity {
                             public void onVerificationFailed(@NonNull FirebaseException e) {
                                 progressBar.setVisibility(View.GONE);
                                 buttonGetOTP.setVisibility(View.VISIBLE);
+                                Log.d("Gaurav", e.toString());
                                 Toast.makeText(SendOTPActivity.this,e.getMessage(),Toast.LENGTH_LONG).show();
                             }
 

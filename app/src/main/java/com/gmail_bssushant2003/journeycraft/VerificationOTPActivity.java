@@ -34,6 +34,9 @@ public class VerificationOTPActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_verification_otpactivity);
 
+        getWindow().setStatusBarColor(getResources().getColor(R.color.white, getTheme()));
+
+
         TextView textMobile = findViewById(R.id.textMobile);
         textMobile.setText(String.format(
                 "+91-%s",getIntent().getStringExtra("mobile")
