@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
+import com.gmail_bssushant2003.journeycraft.Models.Items
 import com.gmail_bssushant2003.journeycraft.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
@@ -21,34 +22,12 @@ class MainActivity : AppCompatActivity() {
         //change status bar color to white
         window.statusBarColor = resources.getColor(R.color.white, theme)
 
-        //uplift button
-        binding.buttonVeg.setOnClickListener {
-            isLiftedVeg = !isLiftedVeg
-            animateCardView(binding.buttonVeg, isLiftedVeg, true)
-        }
-        binding.buttonNonveg.setOnClickListener {
-            isLiftedNonVeg = !isLiftedNonVeg
-            animateCardView(binding.buttonNonveg, isLiftedNonVeg, false)
-        }
-    }
+        val item = intent.getSerializableExtra("individualDestination") as? Items
 
-    private fun animateCardView(button: CardView, isLifted: Boolean, isVeg: Boolean) {
-        // Calculate the scale factor based on the current state
-        val scaleFactor = if (isLifted) 1.1f else 1.0f
-        // Animate the CardView's scaleX and scaleY properties
-        button.animate()
-            .scaleX(scaleFactor)
-            .scaleY(scaleFactor)
-            .setDuration(100) // Adjust the duration as needed
-            .start()
-
-        if(isVeg){
-            val colorRes = if (isLifted) R.color.veg_dark else R.color.veg_light
-            button.setCardBackgroundColor(ContextCompat.getColor(this, colorRes))
-        }
-        else{
-            val colorRes = if (isLifted) R.color.nonveg_dark else R.color.nonveg_light
-            button.setCardBackgroundColor(ContextCompat.getColor(this, colorRes))
+        if(item != null){
+            binding.imageView.setImageResource(item.image)
+            binding.title.text = item.title
+            binding.location.text = item.location
         }
     }
 }

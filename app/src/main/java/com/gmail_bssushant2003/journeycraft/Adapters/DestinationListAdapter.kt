@@ -1,21 +1,36 @@
-package com.gmail_bssushant2003.journeycraft
+package com.gmail_bssushant2003.journeycraft.Adapters
 
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.gmail_bssushant2003.journeycraft.Models.Items
 import com.gmail_bssushant2003.journeycraft.databinding.IndividualLocationBinding
 
-class MyAdapter(val context: Context, val itemsList: ArrayList<Items>) :
+class MyAdapter(private val context: Context, val itemsList: ArrayList<Items>) :
     RecyclerView.Adapter<MyAdapter.MyViewHolder>() {
 
-    inner class MyViewHolder(val binding: IndividualLocationBinding): RecyclerView.ViewHolder(binding.root){
+    private lateinit var MyListener: OnItemClickListener
 
+    interface OnItemClickListener {
+        fun onItemClick(position: Int)
+    }
+
+    fun setOnClickListener(listener: OnItemClickListener){
+        MyListener = listener
+    }
+
+    inner class MyViewHolder(val binding: IndividualLocationBinding,  listener: OnItemClickListener): RecyclerView.ViewHolder(binding.root){
+        init {
+            itemView.setOnClickListener {
+                listener.onItemClick(adapterPosition)
+            }
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         val binding = IndividualLocationBinding.inflate(LayoutInflater.from(context), parent, false)
-        return MyViewHolder(binding)
+        return MyViewHolder(binding, MyListener)
     }
 
     override fun getItemCount(): Int {
