@@ -12,6 +12,7 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.gmail_bssushant2003.journeycraft.Questions.WelcomeActivity;
 import com.gmail_bssushant2003.journeycraft.R;
 import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.PhoneAuthCredential;
@@ -32,7 +33,6 @@ public class SendOTPActivity extends AppCompatActivity {
         Button buttonGetOTP = findViewById(R.id.buttonOTP);
 
         final ProgressBar progressBar = findViewById(R.id.progressBar);
-
 
         buttonGetOTP.setOnClickListener(new View.OnClickListener() {
             @Override

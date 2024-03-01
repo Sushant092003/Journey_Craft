@@ -16,14 +16,23 @@
         android:theme="@style/Theme.JourneyCraft"
         tools:targetApi="tiramisu">
         <activity
-            android:name=".DestinationListActivity"
+            android:name=".Questions.PreferenceActivity"
             android:exported="true" >
 
         </activity>
         <activity
+            android:name=".Questions.NameActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Questions.WelcomeActivity"
+            android:exported="false" />
+        <activity
+            android:name=".DestinationListActivity"
+            android:exported="true" />
+        <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".LandingActivity"
             android:exported="true"

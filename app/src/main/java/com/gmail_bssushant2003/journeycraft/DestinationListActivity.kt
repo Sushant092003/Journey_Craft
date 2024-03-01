@@ -1,14 +1,19 @@
 package com.gmail_bssushant2003.journeycraft
 
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.ImageButton
+import android.widget.TextView
+import androidx.core.content.edit
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.gmail_bssushant2003.journeycraft.Adapters.MyAdapter
 import com.gmail_bssushant2003.journeycraft.Models.Items
+import com.gmail_bssushant2003.journeycraft.Models.Preferences
 import com.gmail_bssushant2003.journeycraft.databinding.ActivityDestinationListBinding
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
@@ -20,16 +25,71 @@ class DestinationListActivity : AppCompatActivity() {
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var buttondrawer: ImageButton
     private lateinit var navigationView: NavigationView
+    private lateinit var recordFile : SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityDestinationListBinding.inflate(layoutInflater)
         setContentView(binding.root)
         itemsList = arrayListOf()
+        recordFile = getSharedPreferences("records", Context.MODE_PRIVATE)
 
         //change status bar color to white
         window.statusBarColor = resources.getColor(R.color.white, theme)
-        binding.recyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+
+
+        //retrieve data from intent
+        val preferences = intent.getSerializableExtra("preferences") as? Preferences
+        val mobileNumber = intent.getStringExtra("mobilenumber")
+        val name = intent.getStringExtra("name")
+
+        if (!recordFile.contains("mobilenumber") && !recordFile.contains("name")) {
+            recordFile.edit {
+                putString("mobileNumber", mobileNumber)
+                putString("name", name)
+            }
+        }
+        else if(!mobileNumber.isNullOrBlank() && !name.isNullOrBlank()){
+            recordFile.edit {
+                putString("mobileNumber", mobileNumber)
+                putString("name", name)
+            }
+        }
+
+        destinationList()
+        leftSideNavBar()
+    }
+
+    private fun leftSideNavBar() {
+        drawerLayout = findViewById(R.id.drawer_layout)
+        buttondrawer = findViewById(R.id.three_lines)
+
+        buttondrawer.setOnClickListener {
+            drawerLayout.openDrawer(GravityCompat.START)
+
+            findViewById<TextView>(R.id.text_name_nav).text = recordFile.getString("name", "XYZ")
+            findViewById<TextView>(R.id.text_mobile_number_nav).text = recordFile.getString("mobileNumber", "XXXXXXXXXX")
+        }
+
+        navigationView = findViewById(R.id.navview)
+
+        navigationView.setNavigationItemSelectedListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.navlogout -> {
+                    FirebaseAuth.getInstance().signOut()
+                    startActivity(Intent(this, LandingActivity::class.java))
+                    finish()
+                    true
+                }
+            }
+            drawerLayout.close()
+            true
+        }
+    }
+
+    private fun destinationList() {
+        binding.recyclerView.layoutManager =
+            LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
 
         itemsList = arrayListOf(
             Items(R.drawable.kolhapur, "Kolhapur", "Maharashtra, India"),
@@ -39,13 +99,6 @@ class DestinationListActivity : AppCompatActivity() {
             Items(R.drawable.lakshadweep, "Lakshadweep", "Lakshadweep , India"),
             Items(R.drawable.manali, "Manali", "Himachal Pradesh, India"),
         )
-
-//        for(i in  1..30){
-//            var item = Items(R.drawable.beach, "Curabitur Beach", "Rome, Italy")
-//            if(i % 2 == 0)
-//                item = Items(R.drawable.mountain, "Mount Everest", "India")
-//            itemsList.add(item)
-//        }
 
         val myAdapter = MyAdapter(this, itemsList)
         binding.recyclerView.adapter = myAdapter
@@ -57,27 +110,6 @@ class DestinationListActivity : AppCompatActivity() {
                 startActivity(intent)
             }
         })
-
-        drawerLayout = findViewById(R.id.drawer_layout)
-        buttondrawer = findViewById(R.id.three_lines)
-
-        buttondrawer.setOnClickListener{
-            drawerLayout.openDrawer(GravityCompat.START)
-        }
-
-        navigationView = findViewById(R.id.navview)
-
-        navigationView.setNavigationItemSelectedListener{ menuItem ->
-            when(menuItem.itemId){
-                R.id.navlogout -> {
-                    FirebaseAuth.getInstance().signOut()
-                    startActivity(Intent(this,LandingActivity::class.java))
-                    finish()
-                    true
-                }
-            }
-            drawerLayout.close()
-            true
-        }
     }
+
 }

@@ -15,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.gmail_bssushant2003.journeycraft.DestinationListActivity;
+import com.gmail_bssushant2003.journeycraft.Questions.WelcomeActivity;
 import com.gmail_bssushant2003.journeycraft.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -44,6 +45,8 @@ public class VerificationOTPActivity extends AppCompatActivity {
         textMobile.setText(String.format(
                 "+91-%s",getIntent().getStringExtra("mobile")
         ));
+
+        String mobileNumber = getIntent().getStringExtra("mobile");
 
 
         inputCode1 = findViewById(R.id.inputcode1);
@@ -97,7 +100,8 @@ public class VerificationOTPActivity extends AppCompatActivity {
                                     progressBar.setVisibility(View.GONE);
                                     buttonVerify.setVisibility(View.VISIBLE);
                                     if(task.isSuccessful()){
-                                        Intent intent = new Intent(getApplicationContext(), DestinationListActivity.class);
+                                        Intent intent = new Intent(getApplicationContext(), WelcomeActivity.class);
+                                        intent.putExtra("mobilenumber", mobileNumber);
                                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                         startActivity(intent);
                                     }else{
