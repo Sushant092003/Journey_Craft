@@ -3,6 +3,7 @@ package com.gmail_bssushant2003.journeycraft
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.ImageView
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import com.gmail_bssushant2003.journeycraft.Models.Items
@@ -13,6 +14,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding : ActivityMainBinding
     private var isLiftedVeg = false
     private var isLiftedNonVeg = false
+    private lateinit var backBtn: ImageView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,10 +26,10 @@ class MainActivity : AppCompatActivity() {
 
         val item = intent.getSerializableExtra("individualDestination") as? Items
 
-        if(item != null){
-            binding.imageView.setImageResource(item.image)
-            binding.title.text = item.title
-            binding.location.text = item.location
+        backBtn = findViewById(R.id.backbtn)
+
+        backBtn.setOnClickListener {
+            super.onBackPressed()
         }
     }
 }
