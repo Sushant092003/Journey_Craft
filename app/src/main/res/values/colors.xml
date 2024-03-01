@@ -16,4 +16,6 @@
     <color name="veg_dark">#2CD834</color>
     <color name="nonveg_light">#F44336</color>
     <color name="nonveg_dark">#FF1100</color>
+    <color name="lifted_card_background">#FFFFCC00</color>
+    <color name="default_card_background">#FFFFFFFF</color>
 </resources>
