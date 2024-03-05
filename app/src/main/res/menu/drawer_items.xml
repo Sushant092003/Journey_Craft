@@ -13,12 +13,15 @@
             android:id="@+id/navcontact"
             android:title="Contact Us"/>
 
+    </group>
+
+    <group android:id="@+id/group2">
         <item
             android:icon="@drawable/baseline_edit_24"
             android:id="@+id/navEditPreference"
             android:title="Edit Preference" />
-
     </group>
+
 
 
 
