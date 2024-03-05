@@ -5,6 +5,7 @@ import android.content.Intent
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.core.content.edit
@@ -14,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.gmail_bssushant2003.journeycraft.Adapters.MyAdapter
 import com.gmail_bssushant2003.journeycraft.Models.Items
 import com.gmail_bssushant2003.journeycraft.Models.Preferences
+import com.gmail_bssushant2003.journeycraft.Questions.PreferenceActivity
 import com.gmail_bssushant2003.journeycraft.databinding.ActivityDestinationListBinding
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
@@ -37,11 +39,16 @@ class DestinationListActivity : AppCompatActivity() {
         //change status bar color to white
         window.statusBarColor = resources.getColor(R.color.white, theme)
 
-
         //retrieve data from intent
         val preferences = intent.getSerializableExtra("preferences") as? Preferences
         val mobileNumber = intent.getStringExtra("mobilenumber")
         val name = intent.getStringExtra("name")
+
+        if (preferences != null) {
+            savePreferences(preferences)
+        }
+
+        Log.d("Gaurav", preferences.toString())
 
         if (!recordFile.contains("mobilenumber") && !recordFile.contains("name")) {
             recordFile.edit {
@@ -58,6 +65,19 @@ class DestinationListActivity : AppCompatActivity() {
 
         destinationList()
         leftSideNavBar()
+    }
+
+    private fun savePreferences(preferences: Preferences) {
+        val editor = recordFile.edit()
+        editor.putBoolean("isLiftedTemple", preferences.isLiftedTemple)
+        editor.putBoolean("isLiftedBeach", preferences.isLiftedBeach)
+        editor.putBoolean("isLiftedHistorical", preferences.isLiftedHistorical)
+        editor.putBoolean("isLiftedMountain", preferences.isLiftedMountain)
+        editor.putBoolean("isLiftedLake", preferences.isLiftedLake)
+        editor.putBoolean("isLiftedMuseum", preferences.isLiftedMuseum)
+        editor.putBoolean("isLiftedPark", preferences.isLiftedPark)
+        editor.putBoolean("isLiftedWildlife", preferences.isLiftedWildlife)
+        editor.apply()
     }
 
     private fun leftSideNavBar() {
@@ -80,6 +100,9 @@ class DestinationListActivity : AppCompatActivity() {
                     startActivity(Intent(this, LandingActivity::class.java))
                     finish()
                     true
+                }
+                R.id.navEditPreference -> {
+                    startActivity(Intent(this, PreferenceActivity::class.java))
                 }
             }
             drawerLayout.close()
