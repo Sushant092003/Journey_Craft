@@ -3,16 +3,18 @@ package com.gmail_bssushant2003.journeycraft
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.KeyEvent
 import android.widget.ImageButton
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.edit
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.gmail_bssushant2003.journeycraft.Adapters.MyAdapter
+import com.gmail_bssushant2003.journeycraft.Login.SendOTPActivity
 import com.gmail_bssushant2003.journeycraft.Models.Items
 import com.gmail_bssushant2003.journeycraft.Models.Preferences
 import com.gmail_bssushant2003.journeycraft.Questions.PreferenceActivity
@@ -97,7 +99,12 @@ class DestinationListActivity : AppCompatActivity() {
             when (menuItem.itemId) {
                 R.id.navlogout -> {
                     FirebaseAuth.getInstance().signOut()
-                    startActivity(Intent(this, LandingActivity::class.java))
+
+
+
+
+                    
+                    startActivity(Intent(this, SendOTPActivity::class.java))
                     finish()
                     true
                 }
@@ -123,16 +130,26 @@ class DestinationListActivity : AppCompatActivity() {
             Items(R.drawable.manali, "Manali", "Himachal Pradesh, India"),
         )
 
+
         val myAdapter = MyAdapter(this, itemsList)
         binding.recyclerView.adapter = myAdapter
 
         myAdapter.setOnClickListener(object : MyAdapter.OnItemClickListener {
             override fun onItemClick(position: Int) {
                 val intent = Intent(this@DestinationListActivity, MainActivity::class.java)
-                intent.putExtra("individualDestination", itemsList[position])
+                intent.putExtra("individualDestination", itemsList[position].title)
+                intent.putExtra("statedestination",itemsList[position].location)
                 startActivity(intent)
             }
         })
+    }
+
+    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            finishAffinity()
+            return true
+        }
+        return super.onKeyDown(keyCode, event)
     }
 
 }

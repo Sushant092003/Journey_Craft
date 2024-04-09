@@ -4,6 +4,8 @@ import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.ImageView
+import android.widget.TextView
+import android.widget.Toast
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import com.gmail_bssushant2003.journeycraft.Models.Items
@@ -24,12 +26,22 @@ class MainActivity : AppCompatActivity() {
         //change status bar color to white
         window.statusBarColor = resources.getColor(R.color.white, theme)
 
-        val item = intent.getSerializableExtra("individualDestination") as? Items
+        val individualDestination = intent.getStringExtra("individualDestination")
+        val destinationstate = intent.getStringExtra("statedestination")
 
-        backBtn = findViewById(R.id.backbtn)
+//        Toast.makeText(this,individualDestination,Toast.LENGTH_SHORT).show()
+//        Toast.makeText(this,destinationstate,Toast.LENGTH_LONG).show()
 
-        backBtn.setOnClickListener {
-            super.onBackPressed()
+        val textViewindidest = findViewById<TextView>(R.id.individualdest)
+        val textViewstate = findViewById<TextView>(R.id.statedest)
+
+        textViewindidest.text = individualDestination
+        textViewstate.text = destinationstate
+
+        val backButton = findViewById<ImageView>(R.id.backButton)
+        backButton.setOnClickListener {
+            onBackPressed()
         }
+
     }
 }
