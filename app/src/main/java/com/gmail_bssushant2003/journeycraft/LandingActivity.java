@@ -57,9 +57,9 @@ public class LandingActivity extends AppCompatActivity {
                         txtTravel.setVisibility(View.VISIBLE);
                         txtTravel.setAnimation(txtAnimation);
                     }
-                },1000);
+                },500);
             }
-        },1000);
+        },0);
 
 
         new Handler().postDelayed(new Runnable() {
@@ -76,7 +76,7 @@ public class LandingActivity extends AppCompatActivity {
                     finish();
         }
             }
-        },6000);
+        },3000);
 
     }
 }

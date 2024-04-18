@@ -100,10 +100,6 @@ class DestinationListActivity : AppCompatActivity() {
                 R.id.navlogout -> {
                     FirebaseAuth.getInstance().signOut()
 
-
-
-
-                    
                     startActivity(Intent(this, SendOTPActivity::class.java))
                     finish()
                     true
