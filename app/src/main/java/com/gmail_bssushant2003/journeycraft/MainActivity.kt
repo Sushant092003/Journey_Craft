@@ -11,6 +11,7 @@ import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import com.gmail_bssushant2003.journeycraft.IntercityTransport.IntercityTransportActivity
 import com.gmail_bssushant2003.journeycraft.Models.Items
+import com.gmail_bssushant2003.journeycraft.MustVisitPlaces.MustVisitPlaces
 import com.gmail_bssushant2003.journeycraft.Transport.TransportActivity
 import com.gmail_bssushant2003.journeycraft.databinding.ActivityMainBinding
 import com.google.maps.model.LatLng
@@ -77,6 +78,11 @@ class MainActivity : AppCompatActivity() {
 
         binding.intercityTransport.setOnClickListener {
             val intent = Intent(this, IntercityTransportActivity::class.java)
+            startActivity(intent)
+        }
+
+        binding.musttryfooditems.setOnClickListener{
+            val intent = Intent(this,MustVisitPlaces::class.java)
             startActivity(intent)
         }
 

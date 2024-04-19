@@ -58,6 +58,7 @@ dependencies {
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     implementation("androidx.drawerlayout:drawerlayout:1.2.0")
     implementation("com.google.android.libraries.places:places:3.4.0")
+    implementation("androidx.activity:activity:1.8.0")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
@@ -66,4 +67,11 @@ dependencies {
     implementation("com.google.firebase:firebase-auth:22.3.1")
 
     implementation("com.airbnb.android:lottie:3.4.4")
+
+    implementation("com.opencsv:opencsv:5.6")
+    annotationProcessor("com.github.bumptech.glide:compiler:4.14.2")
+    implementation("androidx.cardview:cardview:1.0.0")
+    implementation("com.github.bumptech.glide:glide:4.14.2")
+    implementation("androidx.appcompat:appcompat:1.3.0")
+
 }

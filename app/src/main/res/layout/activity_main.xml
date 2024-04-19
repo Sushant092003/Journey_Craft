@@ -113,7 +113,7 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="150dp"
-
+            android:id="@+id/musttryfooditems"
             android:background="@drawable/food_back">
 
             <ImageView
