@@ -9,6 +9,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
+import com.gmail_bssushant2003.journeycraft.IntercityTransport.IntercityTransportActivity
 import com.gmail_bssushant2003.journeycraft.Models.Items
 import com.gmail_bssushant2003.journeycraft.Transport.TransportActivity
 import com.gmail_bssushant2003.journeycraft.databinding.ActivityMainBinding
@@ -71,6 +72,11 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(this, TransportActivity::class.java)
             intent.putExtra("destinationLat", latLng.lat)
             intent.putExtra("destinationLng", latLng.lng)
+            startActivity(intent)
+        }
+
+        binding.intercityTransport.setOnClickListener {
+            val intent = Intent(this, IntercityTransportActivity::class.java)
             startActivity(intent)
         }
 

@@ -17,6 +17,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.JourneyCraft"
         tools:targetApi="tiramisu">
+        <activity android:name=".IntercityTransport.IntercityTransportActivity"
+            android:exported="false"/>
         <activity
             android:name=".Transport.TransportActivity"
             android:exported="false" />
