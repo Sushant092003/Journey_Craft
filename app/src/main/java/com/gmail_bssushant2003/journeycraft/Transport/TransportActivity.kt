@@ -21,6 +21,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.PolylineOptions
 import com.google.android.gms.maps.model.RoundCap
+import com.google.android.material.snackbar.Snackbar
 import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.OkHttpClient
@@ -173,7 +174,7 @@ class TransportActivity : AppCompatActivity(), OnMapReadyCallback{
         val request = Request.Builder()
             .url("https://local-business-data.p.rapidapi.com/search-nearby?query=$place&lat=${userCurrentLocation.latitude}&lng=${userCurrentLocation.longitude}&limit=20&language=en&region=us")
             .get()
-            .addHeader("X-RapidAPI-Key", "5df3c9ee5amsh83e7cca6e6ca9b5p16847fjsn8045f6c948e0")
+            .addHeader("X-RapidAPI-Key", "80d0079460msh4cb76925f41f387p1a96d9jsn3c032d808290")
             .addHeader("X-RapidAPI-Host", "local-business-data.p.rapidapi.com")
             .build()
 
@@ -201,13 +202,24 @@ class TransportActivity : AppCompatActivity(), OnMapReadyCallback{
                         callApi(userLatLng, nearestLocation, progressDialog)
                     } catch (e: JSONException) {
                         Log.e("Gaurav", "Error parsing JSON: ${e.message}")
+                        runOnUiThread {
+                            Toast.makeText(this@TransportActivity, "Some error occurred", Toast.LENGTH_LONG).show()
+                            progressDialog.dismiss()
+                        }
                     }
-                } ?: Log.e("Gaurav", "Response body is null or empty.")
+                } ?: runOnUiThread {
+                    Toast.makeText(this@TransportActivity, "Some error occurred", Toast.LENGTH_LONG).show()
+                    progressDialog.dismiss()
+                }
             }
 
 
             override fun onFailure(call: Call, e: IOException) {
                 Log.e("Gaurav", "Network request failed: ${e.message}")
+                runOnUiThread {
+                    Toast.makeText(this@TransportActivity, "Some error occurred", Toast.LENGTH_LONG).show()
+                    progressDialog.dismiss()
+                }
             }
         })
     }
@@ -271,11 +283,19 @@ class TransportActivity : AppCompatActivity(), OnMapReadyCallback{
                     }
                     catch (e : Exception){
                         e.printStackTrace()
+                        runOnUiThread {
+                            Toast.makeText(this@TransportActivity, "Some error occurred", Toast.LENGTH_LONG).show()
+                            progressDialog.dismiss()
+                        }
                     }
                 }
                 else{
                     val responseBody = response.body?.string()
                     Log.d("Gaurav", "Failed to load response due to: $responseBody")
+                    runOnUiThread {
+                        Toast.makeText(this@TransportActivity, "Some error occurred", Toast.LENGTH_LONG).show()
+                        progressDialog.dismiss()
+                    }
                 }
             }
 
