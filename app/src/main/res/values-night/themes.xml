@@ -13,4 +13,10 @@
 
     <style name="Theme.JourneyCraft" parent="Base.Theme.JourneyCraft" />
 
+    <style name="MyToolbarTitleTextAppearance" parent="TextAppearance.AppCompat.Widget.ActionBar.Title">
+        <item name="android:fontFamily">@font/montserrat_medium</item>
+        <item name="android:textColor">@color/blue</item>
+        <!-- You can add more properties here as needed -->
+    </style>
+
 </resources>

@@ -16,4 +16,9 @@
     <style name="Theme.Weather" parent="Base.Theme.JourneyCraft" >
         <item name="android:windowTranslucentNavigation">true</item>
     </style>
+
+    <style name="MyToolbarTitleTextAppearance" parent="TextAppearance.AppCompat.Widget.ActionBar.Title">
+        <item name="android:fontFamily">@font/montserrat_medium</item>
+        <item name="android:textColor">@color/blue</item>
+    </style>
 </resources>

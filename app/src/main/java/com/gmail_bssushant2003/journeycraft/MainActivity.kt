@@ -6,6 +6,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.gmail_bssushant2003.journeycraft.IntercityTransport.IntercityTransportActivity
+import com.gmail_bssushant2003.journeycraft.MustVisitPlaces.MustVisitPlaces
 import com.gmail_bssushant2003.journeycraft.Transport.TransportActivity
 import com.gmail_bssushant2003.journeycraft.Weather.Activity.WeatherMainActivity
 import com.gmail_bssushant2003.journeycraft.databinding.ActivityMainBinding
@@ -48,25 +49,6 @@ class MainActivity : AppCompatActivity() {
             onBackPressed()
         }
 
-//        if(individualDestination == "Kolhapur"){
-//            latLng = LatLng(16.691307, 74.244865)
-//        }
-//        else if(individualDestination == "Goa"){
-//            latLng = LatLng(15.496777, 73.827827)
-//        }
-//        else if(individualDestination == "Ooty"){
-//            latLng = LatLng(11.410000,76.699997)
-//        }
-//        else if(individualDestination == "Mahabaleshwar"){
-//            latLng = LatLng(17.921721, 73.655602)
-//        }
-//        else if(individualDestination == "Lakshadweep"){
-//            latLng = LatLng(11.7056501,72.7152889)
-//        }
-//        else if(individualDestination == "Manali"){
-//            latLng = LatLng(32.239632,77.188713)
-//        }
-
         //on click available transport
         binding.availableTransport.setOnClickListener {
             val intent = Intent(this, TransportActivity::class.java)
@@ -81,6 +63,7 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
+
         //on click weather card
         binding.weatherCard.setOnClickListener {
             val intent = Intent(this, WeatherMainActivity::class.java)
@@ -89,5 +72,11 @@ class MainActivity : AppCompatActivity() {
             intent.putExtra("name", individualDestination)
             startActivity(intent)
         }
+
+        binding.musttryfooditems.setOnClickListener{
+            val intent = Intent(this,MustVisitPlaces::class.java)
+            startActivity(intent)
+        }
+
     }
 }

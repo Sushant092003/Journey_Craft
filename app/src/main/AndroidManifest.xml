@@ -19,7 +19,10 @@
         tools:targetApi="tiramisu">
         <activity
             android:name=".Weather.Activity.WeatherMainActivity"
-            android:theme="@style/Theme.Weather"
+            android:exported="false"
+            android:theme="@style/Theme.Weather"/>
+        <activity
+            android:name=".MustVisitPlaces.MustVisitPlaces"
             android:exported="false" />
         <activity
             android:name=".IntercityTransport.IntercityTransportActivity"
