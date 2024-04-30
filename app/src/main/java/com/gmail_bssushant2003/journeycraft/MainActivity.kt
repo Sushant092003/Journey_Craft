@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import com.gmail_bssushant2003.journeycraft.DetailedPlan.InputActivity
 import com.gmail_bssushant2003.journeycraft.IntercityTransport.IntercityTransportActivity
 import com.gmail_bssushant2003.journeycraft.MustVisitPlaces.MustVisitPlaces
 import com.gmail_bssushant2003.journeycraft.Transport.TransportActivity
@@ -75,6 +76,11 @@ class MainActivity : AppCompatActivity() {
 
         binding.musttryfooditems.setOnClickListener{
             val intent = Intent(this,MustVisitPlaces::class.java)
+            startActivity(intent)
+        }
+
+        binding.cardDetailedPlan.setOnClickListener{
+            val intent = Intent(this, InputActivity::class.java)
             startActivity(intent)
         }
 

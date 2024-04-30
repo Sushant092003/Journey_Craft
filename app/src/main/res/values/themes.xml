@@ -21,4 +21,9 @@
         <item name="android:fontFamily">@font/montserrat_medium</item>
         <item name="android:textColor">@color/blue</item>
     </style>
+
+    <style name="DialogTheme" parent="Theme.Material3.Light.Dialog">
+        <item name="colorAccent">@color/black</item>
+
+    </style>
 </resources>

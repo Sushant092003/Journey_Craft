@@ -13,4 +13,34 @@
     <string name="menu_places">Places</string>
     <string name="menu_food">Food</string>
     <string name="menu_shopping">Shopping</string>
+
+    <string name="dropdown_label">Places:</string>
+    <string name="show">Show</string>
+    <string name="hide">Hide</string>
+    
+    
+    <string-array name="dropdown_items">
+        <item>Panhala Fort</item>
+        <item>Dajipur Wildlife Sanctuary</item>
+        <item>Shri Chatrapati Shahu Museum (New Palace)</item>
+        <item>Gaganbawada</item>
+        <item>Ramtirth Waterfall</item>
+        <item>Sagareshwar Deer Sanctuary</item>
+        <item>Kopeshwar Temple</item>
+        <item>Narsinhwadi Datta Mandir</item>
+        <item>Mahalaxmi Temple, Kolhapur</item>
+        <item>Binkhambi Ganesh Temple</item>
+        <item>Gangagiri Maharaj Math Temple</item>
+        <item>Rankala Lake</item>
+        <item>Jyotiba Temple</item>
+        <item>Temlabai Mandir</item>
+        <item>Siddhagiri Museum</item>
+        <item>Chinmaya Ganadhish</item>
+        <item>DYP City Mall</item>
+        <item>Sajja Kothi</item>
+        <item>Bhavani Mandap</item>
+        <item>Binkhambi Ganesh Mandir</item>
+        <item>Radhanagari Dam</item>
+        <item>Botanical Gardens in Kolhapur</item>
+    </string-array>
 </resources>

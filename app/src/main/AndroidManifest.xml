@@ -18,9 +18,12 @@
         android:theme="@style/Theme.JourneyCraft"
         tools:targetApi="tiramisu">
         <activity
+            android:name=".DetailedPlan.InputActivity"
+            android:exported="false" />
+        <activity
             android:name=".Weather.Activity.WeatherMainActivity"
             android:exported="false"
-            android:theme="@style/Theme.Weather"/>
+            android:theme="@style/Theme.Weather" />
         <activity
             android:name=".MustVisitPlaces.MustVisitPlaces"
             android:exported="false" />

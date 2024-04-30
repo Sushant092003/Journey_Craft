@@ -90,4 +90,7 @@ dependencies {
     implementation("androidx.appcompat:appcompat:1.3.0")
     implementation ("com.github.ibrahimsn98:SmoothBottomBar:1.7.9")
 
+    //DropDown Menu
+    implementation ("com.github.qandeelabbassi:Dropsy:1.1")
+
 }
