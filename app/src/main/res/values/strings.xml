@@ -10,4 +10,7 @@
     <string name="let_s_kick_start_your_n_travelling_journey">Let\'s Kick Start Your\n Travelling Journey</string>
     <string name="explore_new_places_nand_get_new_experiences">Explore new places \nand get new experiences</string>
     <string name="api_key">AIzaSyAMVwVSIgde3V7yj2qX5OJ5JozD1-uH74w</string>
+    <string name="menu_places">Places</string>
+    <string name="menu_food">Food</string>
+    <string name="menu_shopping">Shopping</string>
 </resources>

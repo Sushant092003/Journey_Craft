@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -18,7 +19,7 @@ import java.util.List;
 public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.PlaceViewHolder> {
 
     private final Context context;
-    private final List<Place> places;
+    private List<Place> places;
 
     public PlaceAdapter(Context context, List<Place> places) {
         this.context = context;
@@ -52,10 +53,12 @@ public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.PlaceViewHol
         holder.expandButton.setOnClickListener(v -> {
             if (holder.bestTimeToVisitTextView.getVisibility() == View.GONE) {
                 holder.bestTimeToVisitTextView.setVisibility(View.VISIBLE);
-                holder.expandButton.setText("Collapse");
+                holder.expandButton.setImageResource(R.drawable.up);
+                //holder.expandButton.setText("Collapse");
             } else {
                 holder.bestTimeToVisitTextView.setVisibility(View.GONE);
-                holder.expandButton.setText("Expand");
+                holder.expandButton.setImageResource(R.drawable.down);
+                //holder.expandButton.setText("Expand");
             }
         });
     }
@@ -65,11 +68,17 @@ public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.PlaceViewHol
         return places.size();
     }
 
+    public void setData(List<Place> places) {
+        this.places = places;
+        notifyDataSetChanged();
+    }
+
     static class PlaceViewHolder extends RecyclerView.ViewHolder {
         TextView nameTextView;
+
         TextView bestTimeToVisitTextView;
         ImageView imageView;
-        Button expandButton;
+        ImageButton expandButton;
 
         public PlaceViewHolder(View itemView) {
             super(itemView);

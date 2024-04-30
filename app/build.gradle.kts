@@ -88,5 +88,6 @@ dependencies {
     implementation("androidx.cardview:cardview:1.0.0")
     implementation("com.github.bumptech.glide:glide:4.14.2")
     implementation("androidx.appcompat:appcompat:1.3.0")
+    implementation ("com.github.ibrahimsn98:SmoothBottomBar:1.7.9")
 
 }
