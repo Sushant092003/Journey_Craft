@@ -17,8 +17,8 @@
     <string name="dropdown_label">Places:</string>
     <string name="show">Show</string>
     <string name="hide">Hide</string>
-    
-    
+
+
     <string-array name="dropdown_items">
         <item>Panhala Fort</item>
         <item>Dajipur Wildlife Sanctuary</item>

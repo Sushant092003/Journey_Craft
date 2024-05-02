@@ -2,6 +2,7 @@ package com.gmail_bssushant2003.journeycraft.DetailedPlan;
 
 import android.annotation.SuppressLint;
 import android.app.TimePickerDialog;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
@@ -84,6 +85,14 @@ public class InputActivity extends AppCompatActivity {
             @Override
             public void onItemClick(int i, @NonNull DropDownItem dropDownItem) {
                 Toast.makeText(InputActivity.this,dropDownItem.getText() + "Clicked at Index " + i,Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        findViewById(R.id.add_button_bottom).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(InputActivity.this, PlanActivity.class);
+                startActivity(intent);
             }
         });
 
