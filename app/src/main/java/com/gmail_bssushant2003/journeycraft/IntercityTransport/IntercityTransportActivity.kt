@@ -152,7 +152,7 @@ class IntercityTransportActivity : AppCompatActivity(), OnMapReadyCallback {
         val client = OkHttpClient()
 
         val request = Request.Builder()
-            .url("https://local-business-data.p.rapidapi.com/search-nearby?query=$place&lat=${userCurrentLocation.latitude}&lng=${userCurrentLocation.longitude}&limit=20&language=en&region=us")
+            .url("https://local-business-data.p.rapidapi.com/search-nearby?query=$place&lat=${userCurrentLocation.latitude}&lng=${userCurrentLocation.longitude}&limit=5&language=en&region=us")
             .get()
             .addHeader("X-RapidAPI-Key", "80d0079460msh4cb76925f41f387p1a96d9jsn3c032d808290")
             .addHeader("X-RapidAPI-Host", "local-business-data.p.rapidapi.com")
@@ -165,7 +165,7 @@ class IntercityTransportActivity : AppCompatActivity(), OnMapReadyCallback {
                     try {
                         val jsonResponse = JSONObject(it)
                         val dataArray = jsonResponse.getJSONArray("data")
-                        val firstElement = dataArray.getJSONObject(0)
+                        val firstElement = dataArray.getJSONObject(1)
                         val lat = firstElement.getDouble("latitude")
                         val lng = firstElement.getDouble("longitude")
                         val nearestLocation = LatLng(lat, lng)

@@ -9,10 +9,6 @@
             android:title="Help"
             android:icon="@drawable/help_chatbot"/>
 
-        <item
-            android:icon="@drawable/hospital"
-            android:id="@+id/navemergency"
-            android:title="Emergency"/>
 
     </group>
 

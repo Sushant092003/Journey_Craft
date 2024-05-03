@@ -2,6 +2,7 @@ package com.gmail_bssushant2003.journeycraft.DetailedPlan;
 
 import android.annotation.SuppressLint;
 import android.app.TimePickerDialog;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
@@ -26,7 +27,7 @@ import com.qandeelabbassi.dropsy.DropDownView;
 
 public class InputActivity extends AppCompatActivity {
 
-    ImageView three_lines;
+    ImageView help;
 
     DropDownView dropdown;
 
@@ -35,6 +36,10 @@ public class InputActivity extends AppCompatActivity {
     Button endTime;
     TextView startTimetv;
     TextView endTimetv;
+
+    String startTimeString;
+    int placeInt;
+    String endTimeString;
 
     @SuppressLint("ResourceAsColor")
     @Override
@@ -49,22 +54,21 @@ public class InputActivity extends AppCompatActivity {
         }
 
 
-        three_lines = findViewById(R.id.three_lines);
+//        help = findViewById(R.id.image_view_help);
         dropdown = findViewById(R.id.dropdown_places);
         startTime = findViewById(R.id.start_time_button);
         endTime = findViewById(R.id.end_time_button);
         startTimetv = findViewById(R.id.start_time_label);
         endTimetv = findViewById(R.id.end_time_label);
 
-
-        three_lines.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                PopupMenu popupMenu = new PopupMenu(InputActivity.this,view);
-                popupMenu.getMenuInflater().inflate(R.menu.detailed_menu,popupMenu.getMenu());
-                popupMenu.show();
-            }
-        });
+//
+//        help.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Intent intent = new Intent(InputActivity.this, ChatBotActivity.class);
+//                startActivity(intent);
+//            }
+//        });
 
         startTime.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -83,7 +87,19 @@ public class InputActivity extends AppCompatActivity {
         dropdown.setItemClickListener(new DropDownView.ItemClickListener() {
             @Override
             public void onItemClick(int i, @NonNull DropDownItem dropDownItem) {
-                Toast.makeText(InputActivity.this,dropDownItem.getText() + "Clicked at Index " + i,Toast.LENGTH_SHORT).show();
+//                Toast.makeText(InputActivity.this,dropDownItem.getText() + "Clicked at Index " + i,Toast.LENGTH_SHORT).show();
+                placeInt = i;
+            }
+        });
+
+        findViewById(R.id.add_button_bottom).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(InputActivity.this, PlanActivity.class);
+                intent.putExtra("Place", placeInt);
+                intent.putExtra("StartTime", startTimeString.substring(0, 2));
+                intent.putExtra("EndTime", endTimeString.substring(0,2));
+                startActivity(intent);
             }
         });
 
@@ -99,6 +115,7 @@ public class InputActivity extends AppCompatActivity {
             public void onTimeSet(TimePicker timePicker, int hours, int minutes) {
                 // Convert hours and minutes to a formatted string (e.g., "15:30")
                 String selectedTime = String.format("%02d:%02d", hours, minutes);
+                startTimeString = selectedTime;
 
                 // Set the selected start time to the TextView
                 startTimetv.setText(selectedTime);
@@ -117,7 +134,7 @@ public class InputActivity extends AppCompatActivity {
             public void onTimeSet(TimePicker timePicker, int hours, int minutes) {
                 // Convert hours and minutes to a formatted string (e.g., "15:30")
                 String selectedTime = String.format("%02d:%02d", hours, minutes);
-
+                endTimeString = selectedTime;
                 // Set the selected end time to the TextView
                 endTimetv.setText(selectedTime);
             }
