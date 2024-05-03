@@ -12,29 +12,60 @@
         android:id="@+id/apbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/white"
         app:layout_constraintTop_toTopOf="parent"
         app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="?attr/colorPrimary"
-            android:backgroundTint="@color/white"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-            app:title="Your Plan 👇"
-            app:titleTextAppearance="@style/MyToolbarTitleTextAppearance"
-            app:titleTextColor="@color/blue" />
+            android:layout_height="match_parent">
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="?attr/colorPrimary"
+                android:backgroundTint="@color/white"
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+                app:title="Your Plan 👇"
+                app:titleTextAppearance="@style/MyToolbarTitleTextAppearance"
+                app:titleTextColor="@color/blue" />
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="end">
+
+                <ImageView
+                    android:id="@+id/map_logo"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_margin="15dp"
+                    android:src="@drawable/google_maps" />
+
+            </LinearLayout>
+
+        </LinearLayout>
 
     </com.google.android.material.appbar.AppBarLayout>
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:layout_marginStart="6dp"
+        android:layout_marginEnd="6dp"
+        android:background="@color/quantum_grey"
+        app:layout_constraintBottom_toTopOf="@id/recycler_view"
+        app:layout_constraintTop_toBottomOf="@id/apbar" />
+
 
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_view"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:id="@+id/recycler_view"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/apbar"
-        tools:listitem="@layout/individual_item_plan" />
+        app:layout_constraintTop_toBottomOf="@id/apbar" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

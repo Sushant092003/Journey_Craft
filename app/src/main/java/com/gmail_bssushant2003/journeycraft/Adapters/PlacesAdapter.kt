@@ -2,8 +2,10 @@ package com.gmail_bssushant2003.journeycraft.Adapters
 
 import android.content.Context
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import androidx.transition.Visibility
 import com.gmail_bssushant2003.journeycraft.Models.Items
 import com.gmail_bssushant2003.journeycraft.databinding.IndividualItemPlanBinding
 import com.gmail_bssushant2003.journeycraft.databinding.IndividualLocationBinding
@@ -27,6 +29,9 @@ class PlacesAdapter(private val context: Context, private val placesList: ArrayL
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         holder.binding.namePlace.text = placesList[position]
+        if(position == placesList.size - 1){
+            holder.binding.arrowDown.visibility = View.GONE
+        }
     }
 
 

@@ -34,12 +34,15 @@
 
     </LinearLayout>
 
-    <View
+    <ImageView
+        android:id="@+id/arrow_down"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/ll"
-        android:background="@color/quantum_grey"
-        android:layout_margin="12dp"
-        android:layout_width="match_parent"
-        android:layout_height="0.1dp"/>
+        android:src="@drawable/arrow_down2"
+        />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
