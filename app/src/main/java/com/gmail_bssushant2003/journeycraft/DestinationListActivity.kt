@@ -98,6 +98,12 @@ class DestinationListActivity : AppCompatActivity() {
         navigationView.setNavigationItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.navlogout -> {
+
+                    val recordFile = getSharedPreferences("records", MODE_PRIVATE)
+                    val editor = recordFile.edit()
+                    editor.putBoolean("isUserValid", false)
+                    editor.apply()
+
                     FirebaseAuth.getInstance().signOut()
 
                     startActivity(Intent(this, SendOTPActivity::class.java))

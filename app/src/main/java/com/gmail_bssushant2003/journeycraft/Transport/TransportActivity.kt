@@ -9,6 +9,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import com.gmail_bssushant2003.journeycraft.Constants.ApiConstants
 import com.gmail_bssushant2003.journeycraft.R
 import com.gmail_bssushant2003.journeycraft.databinding.ActivityTransportBinding
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -21,7 +22,6 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.PolylineOptions
 import com.google.android.gms.maps.model.RoundCap
-import com.google.android.material.snackbar.Snackbar
 import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.OkHttpClient
@@ -172,9 +172,9 @@ class TransportActivity : AppCompatActivity(), OnMapReadyCallback{
         val client = OkHttpClient()
 
         val request = Request.Builder()
-            .url("https://local-business-data.p.rapidapi.com/search-nearby?query=$place&lat=${userCurrentLocation.latitude}&lng=${userCurrentLocation.longitude}&limit=20&language=en&region=us")
+            .url("${ApiConstants.findNearestLocationApiUrl}?query=$place&lat=${userCurrentLocation.latitude}&lng=${userCurrentLocation.longitude}&limit=20&language=en&region=us")
             .get()
-            .addHeader("X-RapidAPI-Key", "80d0079460msh4cb76925f41f387p1a96d9jsn3c032d808290")
+            .addHeader("X-RapidAPI-Key", ApiConstants.findNearestLocationApiKey)
             .addHeader("X-RapidAPI-Host", "local-business-data.p.rapidapi.com")
             .build()
 
@@ -235,17 +235,15 @@ class TransportActivity : AppCompatActivity(), OnMapReadyCallback{
 //        progressDialog.setCancelable(false)
 //        progressDialog.show()
 
-        val baseUrl = "https://trueway-directions2.p.rapidapi.com/"
-        val endpoint = "FindDrivingPath"
         val origin = "${userLatLng.latitude},${userLatLng.longitude}" // Example coordinates, replace with actual values
         val destination = "${destinationLatLng.latitude},${destinationLatLng.longitude}" // Example coordinates, replace with actual values
 
-        val url = "$baseUrl$endpoint?origin=$origin&destination=$destination"
+        val url = "${ApiConstants.findDrivingPathApiUrl}?origin=$origin&destination=$destination"
 
         val request = Request.Builder()
             .url(url)
             .get()
-            .addHeader("X-RapidAPI-Key", "35ba524ea8msh02b817b9ed5b0ccp1d6de5jsn0efa6edc5b3f")
+            .addHeader("X-RapidAPI-Key", ApiConstants.findDrivingPathApiKey)
             .addHeader("X-RapidAPI-Host", "trueway-directions2.p.rapidapi.com")
             .build()
 

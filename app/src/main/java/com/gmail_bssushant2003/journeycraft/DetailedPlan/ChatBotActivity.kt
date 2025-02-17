@@ -6,6 +6,7 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.gmail_bssushant2003.journeycraft.Adapters.MessageAdapter
+import com.gmail_bssushant2003.journeycraft.Constants.ApiConstants
 import com.gmail_bssushant2003.journeycraft.Models.Message
 import com.gmail_bssushant2003.journeycraft.R
 import com.gmail_bssushant2003.journeycraft.databinding.ActivityChatBotBinding
@@ -42,7 +43,7 @@ class ChatBotActivity : AppCompatActivity() {
         //set up gemini api
         generativeModel = GenerativeModel(
             modelName = "gemini-pro",
-            apiKey = "AIzaSyCpS05faFeF4jgmLdi74Vgqoa3iWLyBF0s"
+            apiKey = ApiConstants.geminiApiKey
         )
 
         //change color of status bar

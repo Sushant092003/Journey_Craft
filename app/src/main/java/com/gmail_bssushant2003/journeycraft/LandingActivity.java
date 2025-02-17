@@ -1,7 +1,10 @@
 package com.gmail_bssushant2003.journeycraft;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -10,11 +13,11 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.gmail_bssushant2003.journeycraft.Login.SendOTPActivity;
+import com.gmail_bssushant2003.journeycraft.Questions.WelcomeActivity;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class LandingActivity extends AppCompatActivity {
@@ -65,12 +68,17 @@ public class LandingActivity extends AppCompatActivity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                if(FirebaseAuth.getInstance().getCurrentUser() != null){
+
+                SharedPreferences recordFile = getSharedPreferences("records", Context.MODE_PRIVATE);
+                boolean isUserValid = recordFile.getBoolean("isUserValid", false);
+
+                if(isUserValid){
                     Intent intent = new Intent(LandingActivity.this, DestinationListActivity.class);
                     startActivity(intent);
                     finish();
-        }
+                }
                 else {
+//                    Intent intent = new Intent(LandingActivity.this, WelcomeActivity.class);
                     Intent intent = new Intent(LandingActivity.this, SendOTPActivity.class);
                     startActivity(intent);
                     finish();

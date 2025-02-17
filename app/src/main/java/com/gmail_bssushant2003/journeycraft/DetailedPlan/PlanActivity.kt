@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.gmail_bssushant2003.journeycraft.Adapters.MyAdapter
 import com.gmail_bssushant2003.journeycraft.Adapters.PlacesAdapter
+import com.gmail_bssushant2003.journeycraft.Constants.ApiConstants
 import com.gmail_bssushant2003.journeycraft.MainActivity
 import com.gmail_bssushant2003.journeycraft.R
 import com.gmail_bssushant2003.journeycraft.databinding.ActivityPlanBinding
@@ -99,7 +100,7 @@ class PlanActivity : AppCompatActivity() {
         Log.d("Sushant", st)
         Log.d("Sushant", et)
 
-        val baseUrl = "http://192.168.104.85:5000/data?startloc=$place&starttime=$st&endtime=$et"
+        val baseUrl = "${ApiConstants.showDetailedPlanApiUrl}?startloc=$place&starttime=$st&endtime=$et"
 
         val request = Request.Builder()
             .url(baseUrl)

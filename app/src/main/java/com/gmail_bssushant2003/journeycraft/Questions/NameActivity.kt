@@ -1,5 +1,6 @@
 package com.gmail_bssushant2003.journeycraft.Questions
 
+import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -23,6 +24,13 @@ class NameActivity : AppCompatActivity() {
                 Toast.makeText(this, "Please enter your name", Toast.LENGTH_SHORT).show()
             } else {
                 val mobileNumber = intent.getStringExtra("mobilenumber")
+
+                val sharedPreferences = getSharedPreferences("records", Context.MODE_PRIVATE)
+                val editor = sharedPreferences.edit()
+                editor.putString("name", nameText)
+                editor.putString("mobileNumber", mobileNumber)
+                editor.apply()
+
                 val intent = Intent(this, PreferenceActivity::class.java)
                 intent.putExtra("mobilenumber", mobileNumber)
                 intent.putExtra("name", nameText)
