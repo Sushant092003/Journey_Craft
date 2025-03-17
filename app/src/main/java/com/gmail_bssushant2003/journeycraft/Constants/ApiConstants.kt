@@ -7,7 +7,7 @@ object  ApiConstants {
     var findDrivingPathApiUrl = "https://trueway-directions2.p.rapidapi.com/FindDrivingPath"
     var findDrivingPathApiKey = "35ba524ea8msh02b817b9ed5b0ccp1d6de5jsn0efa6edc5b3f"
 
-    var showDetailedPlanApiUrl = "http://192.168.219.38:5000/data"
+    var showDetailedPlanApiUrl = "http://192.168.1.4:5000/data"
 
     var geminiApiKey = "AIzaSyCpS05faFeF4jgmLdi74Vgqoa3iWLyBF0s"
 

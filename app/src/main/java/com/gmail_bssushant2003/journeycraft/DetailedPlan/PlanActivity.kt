@@ -13,12 +13,14 @@ import com.gmail_bssushant2003.journeycraft.Adapters.PlacesAdapter
 import com.gmail_bssushant2003.journeycraft.Constants.ApiConstants
 import com.gmail_bssushant2003.journeycraft.R
 import com.gmail_bssushant2003.journeycraft.databinding.ActivityPlanBinding
+import com.google.firebase.database.FirebaseDatabase
 import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
 import java.io.IOException
+import java.util.UUID
 
 class PlanActivity : AppCompatActivity() {
 
@@ -113,7 +115,7 @@ class PlanActivity : AppCompatActivity() {
             .get()
             .build()
 
-        progressBar.show()
+//        progressBar.show()
 
         client.newCall(request).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
@@ -144,10 +146,16 @@ class PlanActivity : AppCompatActivity() {
             }
 
             override fun onResponse(call: Call, response: Response) {
+//                progressBar.hide()
                 if(response.isSuccessful){
                     try {
                         val responseBody = response.body?.string()
                         var cnt = 0
+
+                        //store response in firebase
+                        storeResponseInFirebase(responseBody!!)
+
+                        Log.d("Adarsh", responseBody.toString())
 
                         if (responseBody != null) {
                             for (item in responseBody.split(";")) {
@@ -164,7 +172,6 @@ class PlanActivity : AppCompatActivity() {
                         }
 
                         runOnUiThread {
-                            progressBar.hide()
                             myAdapter = PlacesAdapter(this@PlanActivity, finalPlacesList, timeList)
                             binding.recyclerView.adapter = myAdapter
 
@@ -196,6 +203,19 @@ class PlanActivity : AppCompatActivity() {
                     progressBar.hide()
                     Log.d("Gaurav", "Failed to load response due to: $responseBody")
                 }
+            }
+
+            private fun storeResponseInFirebase(response : String) {
+
+                val recordFile = getSharedPreferences("records", MODE_PRIVATE)
+                val phoneNumber = recordFile.getString("phoneNumber", "")
+
+                val database = FirebaseDatabase.getInstance()
+                val tripRef = database.getReference("trips").child("$phoneNumber")
+
+                val customUid = UUID.randomUUID().toString()
+
+                tripRef.child(customUid).setValue(response)
             }
 
         })

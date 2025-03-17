@@ -98,6 +98,7 @@ public class VerificationOTPActivity extends AppCompatActivity {
                         SharedPreferences recordFile = getSharedPreferences("records", Context.MODE_PRIVATE);
                         SharedPreferences.Editor editor = recordFile.edit();
                         editor.putBoolean("isUserValid", true);
+                        editor.putString("phoneNumber", mobileNumber);
                         editor.apply();
 
                         Intent intent = new Intent(getApplicationContext(), WelcomeActivity.class);

@@ -45,7 +45,7 @@ class RouteDesigner : AppCompatActivity() {
 
         val client = OkHttpClient()
 
-        val baseUrl = "http://192.168.78.126:5000/data?startloc=$place&starttime=$st&endtime=$et"
+        val baseUrl = "http://192.168.1.4:5000/data?startloc=$place&starttime=$st&endtime=$et"
 
         val request = Request.Builder()
             .url(baseUrl)

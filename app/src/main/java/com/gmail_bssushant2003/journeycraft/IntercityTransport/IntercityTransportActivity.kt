@@ -48,6 +48,9 @@ class IntercityTransportActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var taxiLatLng : LatLng
     private lateinit var busLatLng : LatLng
 
+    var firstApiCall = 0
+    var secondApiCall = 0
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityIntercityTransportBinding.inflate(layoutInflater)
@@ -180,6 +183,7 @@ class IntercityTransportActivity : AppCompatActivity(), OnMapReadyCallback {
                             mMap.addMarker(MarkerOptions().position(userLatLng))
                             coordinatesList.clear()
                         }
+                        firstApiCall++
                         callApi(userLatLng, nearestLocation, progressDialog)
                     } catch (e: JSONException) {
                         Log.e("Gaurav", "Error parsing JSON: ${e.message}")
@@ -215,6 +219,7 @@ class IntercityTransportActivity : AppCompatActivity(), OnMapReadyCallback {
 //        progressDialog.setMessage("Generating route...")
 //        progressDialog.setCancelable(false)
 //        progressDialog.show()
+        secondApiCall++
 
         val baseUrl = "https://trueway-directions2.p.rapidapi.com/"
         val endpoint = "FindDrivingPath"
