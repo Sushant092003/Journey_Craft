@@ -1,5 +1,6 @@
 package com.gmail_bssushant2003.journeycraft.DetailedPlan
 
+import android.app.ProgressDialog
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -10,7 +11,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.gmail_bssushant2003.journeycraft.Adapters.MyAdapter
 import com.gmail_bssushant2003.journeycraft.Adapters.PlacesAdapter
 import com.gmail_bssushant2003.journeycraft.Constants.ApiConstants
-import com.gmail_bssushant2003.journeycraft.MainActivity
 import com.gmail_bssushant2003.journeycraft.R
 import com.gmail_bssushant2003.journeycraft.databinding.ActivityPlanBinding
 import okhttp3.Call
@@ -18,7 +18,6 @@ import okhttp3.Callback
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
-import org.apache.commons.lang3.ObjectUtils.Null
 import java.io.IOException
 
 class PlanActivity : AppCompatActivity() {
@@ -34,6 +33,7 @@ class PlanActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityPlanBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
         placesList = arrayListOf()
         finalPlacesList = arrayListOf()
         tempList = arrayListOf()
@@ -46,7 +46,7 @@ class PlanActivity : AppCompatActivity() {
         val startTime = intent.getStringExtra("StartTime")
         val endTime = intent.getStringExtra("EndTime")
 
-        tempList = arrayListOf("Ramtirth Waterfall", "Gaganbawada", "New Palace", "Dajipur Wildlife Sanctuary", "Panhala Fort", "Mahalaximi temple", "Jyotiba temple", "KIT's College of Engineering, Kolhapur", "DYP city mall", "Kanerimath")
+        tempList = arrayListOf("Ramtirth Waterfall", "Gaganbawada", "New Palace", "Dajipur Wildlife Sanctuary", "Panhala Fort", "Mahalaximi temple", "Jyotiba temple", "KIT College, Kolhapur", "DYP city mall")
         callAPI(place.toString(), startTime!!, endTime!!)
 
 
@@ -100,6 +100,12 @@ class PlanActivity : AppCompatActivity() {
         Log.d("Sushant", st)
         Log.d("Sushant", et)
 
+        val progressBar = ProgressDialog(this@PlanActivity).apply {
+            setMessage("Loading...")
+            setCancelable(false)
+            setProgressStyle(ProgressDialog.STYLE_SPINNER)
+        }
+
         val baseUrl = "${ApiConstants.showDetailedPlanApiUrl}?startloc=$place&starttime=$st&endtime=$et"
 
         val request = Request.Builder()
@@ -107,13 +113,33 @@ class PlanActivity : AppCompatActivity() {
             .get()
             .build()
 
+        progressBar.show()
+
         client.newCall(request).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
                 Log.d("Gaurav", "1]failed to load response due to ${e.message}")
 //                progressDialog.dismiss()
                 runOnUiThread {
-                    myAdapter = PlacesAdapter(this@PlanActivity, tempList, timeList)
+                    progressBar.hide()
+                    myAdapter = PlacesAdapter(this@PlanActivity,
+                        this@PlanActivity.tempList, timeList)
                     binding.recyclerView.adapter = myAdapter
+
+                    myAdapter.setOnClickListener(object : MyAdapter.OnItemClickListener {
+                        override fun onItemClick(position: Int) {
+                            val gmmIntentUri1 = Uri.parse("https://www.google.com/maps/dir/?api=1&destination=${tempList[position]}")
+
+                            val mapIntent1 = Intent(Intent.ACTION_VIEW, gmmIntentUri1)
+
+                            mapIntent1.`package` = "com.google.android.apps.maps"
+
+                            if (mapIntent1.resolveActivity(packageManager) != null) {
+                                startActivity(mapIntent1)
+                            } else {
+                                Toast.makeText(this@PlanActivity, "Google Maps app is not installed", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                    })
                 }
             }
 
@@ -138,6 +164,7 @@ class PlanActivity : AppCompatActivity() {
                         }
 
                         runOnUiThread {
+                            progressBar.hide()
                             myAdapter = PlacesAdapter(this@PlanActivity, finalPlacesList, timeList)
                             binding.recyclerView.adapter = myAdapter
 
@@ -160,11 +187,13 @@ class PlanActivity : AppCompatActivity() {
 
                     }
                     catch (e : Exception){
+                        progressBar.hide()
                         e.printStackTrace()
                     }
                 }
                 else{
                     val responseBody = response.body?.string()
+                    progressBar.hide()
                     Log.d("Gaurav", "Failed to load response due to: $responseBody")
                 }
             }

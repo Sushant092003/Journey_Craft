@@ -43,7 +43,8 @@ class PlacesAdapter(private val context: Context, private val placesList: ArrayL
         val x = position+1
         holder.binding.numberPlace.text = x.toString()
 
-        holder.binding.timePlace.text = timeList[position]
+        if(timeList.size > 0) holder.binding.timePlace.text = timeList[position]
+        else holder.binding.timePlace.text = "10:10"
 
         if(placesList[position].length > 16){
             val layoutParams = holder.binding.lineStraight.layoutParams
