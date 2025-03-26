@@ -22,6 +22,19 @@
             android:title="Edit Preference" />
     </group>
 
+    <group android:id="@+id/group3">
+        <item
+            android:icon="@drawable/travel_bag"
+            android:id="@+id/navActivePlan"
+            android:title="Active Plan" />
+
+        <item
+            android:icon="@drawable/travel_history"
+            android:id="@+id/navHistory"
+            android:title="History" />
+
+    </group>
+
 
 
 

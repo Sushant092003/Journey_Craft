@@ -8,19 +8,31 @@ import android.util.Log
 import android.view.KeyEvent
 import android.widget.ImageButton
 import android.widget.TextView
+import android.widget.Toast
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.edit
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.gmail_bssushant2003.journeycraft.Adapters.MyAdapter
+import com.gmail_bssushant2003.journeycraft.DetailedPlan.PlanActivity
 import com.gmail_bssushant2003.journeycraft.Login.SendOTPActivity
 import com.gmail_bssushant2003.journeycraft.Models.Items
 import com.gmail_bssushant2003.journeycraft.Models.Preferences
+import com.gmail_bssushant2003.journeycraft.Models.TripRecord
 import com.gmail_bssushant2003.journeycraft.Questions.PreferenceActivity
 import com.gmail_bssushant2003.journeycraft.databinding.ActivityDestinationListBinding
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
+import kotlinx.coroutines.launch
+import kotlin.coroutines.suspendCoroutine
 
 class DestinationListActivity : AppCompatActivity() {
 
@@ -113,11 +125,48 @@ class DestinationListActivity : AppCompatActivity() {
                 R.id.navEditPreference -> {
                     startActivity(Intent(this, PreferenceActivity::class.java))
                 }
+                R.id.navActivePlan -> {
+                    val recordFile = getSharedPreferences("records", MODE_PRIVATE)
+                    val phoneNumber = recordFile.getString("phoneNumber", "")
+                    lifecycleScope.launch {
+                        val tripData = getLastTripData(phoneNumber!!)
+
+                        if(tripData == null){
+                            Toast.makeText(this@DestinationListActivity, "No active plan", Toast.LENGTH_LONG).show()
+                        }
+                        else{
+                            val intent = Intent(this@DestinationListActivity, PlanActivity::class.java)
+                            intent.putExtra("tripData", tripData)
+                            startActivity(intent)
+                        }
+                    }
+                }
+                R.id.navHistory -> {
+
+                }
             }
             drawerLayout.close()
             true
         }
     }
+
+    suspend fun getLastTripData(phoneNumber: String): String? = suspendCoroutine { continuation ->
+        val database = FirebaseDatabase.getInstance()
+        val tripRef = database.getReference("trips").child(phoneNumber)
+
+        tripRef.orderByKey().limitToLast(1).addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val lastData = snapshot.children.firstOrNull()?.getValue(TripRecord::class.java)
+                continuation.resume(lastData?.response) // Return the data
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                continuation.resume(null) // Return null if there's an error
+            }
+        })
+    }
+
+
 
     private fun destinationList() {
         binding.recyclerView.layoutManager =

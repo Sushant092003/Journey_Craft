@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.gmail_bssushant2003.journeycraft.Adapters.MyAdapter
 import com.gmail_bssushant2003.journeycraft.Adapters.PlacesAdapter
 import com.gmail_bssushant2003.journeycraft.Constants.ApiConstants
+import com.gmail_bssushant2003.journeycraft.Models.TripRecord
 import com.gmail_bssushant2003.journeycraft.R
 import com.gmail_bssushant2003.journeycraft.databinding.ActivityPlanBinding
 import com.google.firebase.database.FirebaseDatabase
@@ -20,7 +21,11 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
 import java.io.IOException
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 import java.util.UUID
+import androidx.core.net.toUri
 
 class PlanActivity : AppCompatActivity() {
 
@@ -48,20 +53,31 @@ class PlanActivity : AppCompatActivity() {
         val startTime = intent.getStringExtra("StartTime")
         val endTime = intent.getStringExtra("EndTime")
 
-        tempList = arrayListOf("Ramtirth Waterfall", "Gaganbawada", "New Palace", "Dajipur Wildlife Sanctuary", "Panhala Fort", "Mahalaximi temple", "Jyotiba temple", "KIT College, Kolhapur", "DYP city mall")
-        callAPI(place.toString(), startTime!!, endTime!!)
 
+        //check if it is an active plan
+        val tripData = intent.getStringExtra("tripData")
+        if(tripData != null){
 
-        for(i in placesList) Log.d("Gaurav", i.toString())
+            var cnt = 0
+
+            for (item in tripData.split(";")) {
+                cnt++
+                if(cnt % 2 != 0) placesList.add(item.trim())
+                else timeList.add(item.trim())
+            }
+
+            updateUI(placesList, timeList)
+        }
+        else{
+            tempList = arrayListOf("Ramtirth Waterfall", "Gaganbawada", "New Palace", "Dajipur Wildlife Sanctuary", "Panhala Fort", "Mahalaximi temple", "Jyotiba temple", "KIT College, Kolhapur", "DYP city mall")
+            callAPI(place.toString(), startTime!!, endTime!!)
+        }
+
         binding.recyclerView.layoutManager = LinearLayoutManager(this)
 //        myAdapter = PlacesAdapter(this, placesList)
 //        binding.recyclerView.adapter = myAdapter
 
 
-        // by map logo
-        binding.mapLogo.setOnClickListener {
-            goInMap()
-        }
 
         //help page
         binding.imageViewHelp.setOnClickListener {
@@ -70,11 +86,11 @@ class PlanActivity : AppCompatActivity() {
 
     }
 
-    private fun goInMap() {
+    private fun goInMap(placeList : ArrayList<String>) {
         
         var loc : String = ""
 
-        for(i in finalPlacesList){
+        for(i in placeList){
             loc = "$loc$i/"
         }
 
@@ -121,28 +137,8 @@ class PlanActivity : AppCompatActivity() {
             override fun onFailure(call: Call, e: IOException) {
                 Log.d("Gaurav", "1]failed to load response due to ${e.message}")
 //                progressDialog.dismiss()
-                runOnUiThread {
-                    progressBar.hide()
-                    myAdapter = PlacesAdapter(this@PlanActivity,
-                        this@PlanActivity.tempList, timeList)
-                    binding.recyclerView.adapter = myAdapter
 
-                    myAdapter.setOnClickListener(object : MyAdapter.OnItemClickListener {
-                        override fun onItemClick(position: Int) {
-                            val gmmIntentUri1 = Uri.parse("https://www.google.com/maps/dir/?api=1&destination=${tempList[position]}")
-
-                            val mapIntent1 = Intent(Intent.ACTION_VIEW, gmmIntentUri1)
-
-                            mapIntent1.`package` = "com.google.android.apps.maps"
-
-                            if (mapIntent1.resolveActivity(packageManager) != null) {
-                                startActivity(mapIntent1)
-                            } else {
-                                Toast.makeText(this@PlanActivity, "Google Maps app is not installed", Toast.LENGTH_SHORT).show()
-                            }
-                        }
-                    })
-                }
+                updateUI(tempList, timeList)
             }
 
             override fun onResponse(call: Call, response: Response) {
@@ -171,26 +167,7 @@ class PlanActivity : AppCompatActivity() {
                             finalPlacesList.add(i)
                         }
 
-                        runOnUiThread {
-                            myAdapter = PlacesAdapter(this@PlanActivity, finalPlacesList, timeList)
-                            binding.recyclerView.adapter = myAdapter
-
-                            myAdapter.setOnClickListener(object : MyAdapter.OnItemClickListener {
-                                override fun onItemClick(position: Int) {
-                                    val gmmIntentUri1 = Uri.parse("https://www.google.com/maps/dir/?api=1&destination=${placesList[position]}")
-
-                                    val mapIntent1 = Intent(Intent.ACTION_VIEW, gmmIntentUri1)
-
-                                    mapIntent1.`package` = "com.google.android.apps.maps"
-
-                                    if (mapIntent1.resolveActivity(packageManager) != null) {
-                                        startActivity(mapIntent1)
-                                    } else {
-                                        Toast.makeText(this@PlanActivity, "Google Maps app is not installed", Toast.LENGTH_SHORT).show()
-                                    }
-                                }
-                            })
-                        }
+                        updateUI(finalPlacesList, timeList)
 
                     }
                     catch (e : Exception){
@@ -205,8 +182,7 @@ class PlanActivity : AppCompatActivity() {
                 }
             }
 
-            private fun storeResponseInFirebase(response : String) {
-
+            private fun storeResponseInFirebase(response: String) {
                 val recordFile = getSharedPreferences("records", MODE_PRIVATE)
                 val phoneNumber = recordFile.getString("phoneNumber", "")
 
@@ -214,11 +190,51 @@ class PlanActivity : AppCompatActivity() {
                 val tripRef = database.getReference("trips").child("$phoneNumber")
 
                 val customUid = UUID.randomUUID().toString()
+                val currentDateTime = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(
+                    Date()
+                )
 
-                tripRef.child(customUid).setValue(response)
+                // Create a TripRecord object
+                val tripRecord = TripRecord(response, currentDateTime)
+
+                tripRef.child(customUid).setValue(tripRecord)
             }
+
 
         })
 
+    }
+
+    fun updateUI(placeList : ArrayList<String>, timeList : ArrayList<String>) {
+        runOnUiThread {
+            myAdapter = PlacesAdapter(this@PlanActivity, placeList, timeList)
+            binding.recyclerView.adapter = myAdapter
+
+            // by map logo
+            binding.mapLogo.setOnClickListener {
+                goInMap(placeList)
+            }
+
+            myAdapter.setOnClickListener(object : MyAdapter.OnItemClickListener {
+                override fun onItemClick(position: Int) {
+                    val gmmIntentUri1 =
+                        "https://www.google.com/maps/dir/?api=1&destination=${placeList[position]}".toUri()
+
+                    val mapIntent1 = Intent(Intent.ACTION_VIEW, gmmIntentUri1)
+
+                    mapIntent1.`package` = "com.google.android.apps.maps"
+
+                    if (mapIntent1.resolveActivity(packageManager) != null) {
+                        startActivity(mapIntent1)
+                    } else {
+                        Toast.makeText(
+                            this@PlanActivity,
+                            "Google Maps app is not installed",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+            })
+        }
     }
 }
