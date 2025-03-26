@@ -23,6 +23,7 @@ import com.gmail_bssushant2003.journeycraft.Login.SendOTPActivity
 import com.gmail_bssushant2003.journeycraft.Models.Items
 import com.gmail_bssushant2003.journeycraft.Models.Preferences
 import com.gmail_bssushant2003.journeycraft.Models.TripRecord
+import com.gmail_bssushant2003.journeycraft.NavBar.PlanHistory
 import com.gmail_bssushant2003.journeycraft.Questions.PreferenceActivity
 import com.gmail_bssushant2003.journeycraft.databinding.ActivityDestinationListBinding
 import com.google.android.material.navigation.NavigationView
@@ -142,7 +143,20 @@ class DestinationListActivity : AppCompatActivity() {
                     }
                 }
                 R.id.navHistory -> {
+                    val recordFile = getSharedPreferences("records", MODE_PRIVATE)
+                    val phoneNumber = recordFile.getString("phoneNumber", "")
 
+                    lifecycleScope.launch {
+                        val historyList = getHistory(phoneNumber!!);
+                        if(historyList.isEmpty()){
+                            Toast.makeText(this@DestinationListActivity, "Please plan a trip", Toast.LENGTH_LONG).show()
+                        }
+                        else{
+                            val intent = Intent(this@DestinationListActivity, PlanHistory::class.java)
+                            intent.putExtra("historyList", historyList)
+                            startActivity(intent)
+                        }
+                    }
                 }
             }
             drawerLayout.close()
@@ -165,6 +179,30 @@ class DestinationListActivity : AppCompatActivity() {
             }
         })
     }
+
+    private suspend fun getHistory(phoneNumber: String): ArrayList<TripRecord> = suspendCoroutine { continuation ->
+        val database = FirebaseDatabase.getInstance()
+        val tripRef = database.getReference("trips").child(phoneNumber)
+
+        tripRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val tripList = ArrayList<TripRecord>()
+
+                for (child in snapshot.children) {
+                    val trip = child.getValue(TripRecord::class.java)
+                    if (trip != null) {
+                        tripList.add(trip)
+                    }
+                }
+                continuation.resume(tripList) // Return the list of trips
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                continuation.resume(ArrayList()) // Return empty list on error
+            }
+        })
+    }
+
 
 
 
