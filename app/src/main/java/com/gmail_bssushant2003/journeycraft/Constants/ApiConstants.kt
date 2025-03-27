@@ -8,6 +8,7 @@ object  ApiConstants {
     var findDrivingPathApiKey = "35ba524ea8msh02b817b9ed5b0ccp1d6de5jsn0efa6edc5b3f"
 
     var showDetailedPlanApiUrl = "http://192.168.1.8:5000/data"
+    var nearbyRestGuideApiUrl = "http://192.168.1.6:8080"
 
     var geminiApiKey = "AIzaSyCpS05faFeF4jgmLdi74Vgqoa3iWLyBF0s"
 

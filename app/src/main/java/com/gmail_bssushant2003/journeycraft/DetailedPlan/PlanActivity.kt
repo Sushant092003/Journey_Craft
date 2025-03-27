@@ -1,31 +1,39 @@
 package com.gmail_bssushant2003.journeycraft.DetailedPlan
 
 import android.app.ProgressDialog
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.net.toUri
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.gmail_bssushant2003.journeycraft.Adapters.MyAdapter
 import com.gmail_bssushant2003.journeycraft.Adapters.PlacesAdapter
 import com.gmail_bssushant2003.journeycraft.Constants.ApiConstants
+import com.gmail_bssushant2003.journeycraft.Models.LatLng
 import com.gmail_bssushant2003.journeycraft.Models.TripRecord
 import com.gmail_bssushant2003.journeycraft.R
 import com.gmail_bssushant2003.journeycraft.databinding.ActivityPlanBinding
 import com.google.firebase.database.FirebaseDatabase
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
+import java.io.BufferedReader
 import java.io.IOException
+import java.io.InputStreamReader
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 import java.util.UUID
-import androidx.core.net.toUri
 
 class PlanActivity : AppCompatActivity() {
 
@@ -35,6 +43,7 @@ class PlanActivity : AppCompatActivity() {
     private lateinit var finalPlacesList : ArrayList<String>
     private lateinit var tempList : ArrayList<String>
     private lateinit var myAdapter : PlacesAdapter
+    private lateinit var mainList : ArrayList<String>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,6 +54,7 @@ class PlanActivity : AppCompatActivity() {
         finalPlacesList = arrayListOf()
         tempList = arrayListOf()
         timeList = arrayListOf()
+        mainList = arrayListOf()
 
         window.statusBarColor = resources.getColor(R.color.white, theme)
 
@@ -69,7 +79,7 @@ class PlanActivity : AppCompatActivity() {
             updateUI(placesList, timeList)
         }
         else{
-            tempList = arrayListOf("Ramtirth Waterfall", "Gaganbawada", "New Palace", "Dajipur Wildlife Sanctuary", "Panhala Fort", "Mahalaximi temple", "Jyotiba temple", "KIT College, Kolhapur", "DYP city mall")
+            tempList = arrayListOf("New Palace", "Dajipur Wildlife Sanctuary", "Panhala Fort", "Mahalaxmi temple", "Jyotiba temple", "DYP city mall")
             callAPI(place.toString(), startTime!!, endTime!!)
         }
 
@@ -81,7 +91,17 @@ class PlanActivity : AppCompatActivity() {
 
         //help page
         binding.imageViewHelp.setOnClickListener {
-            startActivity(Intent(this, ChatBotActivity::class.java))
+//            startActivity(Intent(this, ChatBotActivity::class.java))
+
+            lifecycleScope.launch {
+                var placesLatLngList = readCSV(this@PlanActivity, mainList)
+                Log.d("Gaurav", placesLatLngList.toString())
+                val intent = Intent(this@PlanActivity, NearbyGuidesAndRestaurants::class.java)
+                intent.putExtra("placesLatLngList", ArrayList(placesLatLngList))
+                startActivity(intent)
+            }
+
+
         }
 
     }
@@ -94,7 +114,6 @@ class PlanActivity : AppCompatActivity() {
             loc = "$loc$i/"
         }
 
-//        Log.d("GGGGGG", loc)
 
         val gmmIntentUri1 = Uri.parse("https://www.google.com/maps/dir/$loc")
 
@@ -109,6 +128,34 @@ class PlanActivity : AppCompatActivity() {
         }
 
     }
+
+
+
+    private suspend fun readCSV(context: Context, places: ArrayList<String>): List<LatLng> = withContext(
+        Dispatchers.IO) {
+        val placesLatLngList = mutableListOf<LatLng>()
+
+        val inputStream = context.assets.open("places_lat_lng.csv")
+        val reader = BufferedReader(InputStreamReader(inputStream))
+
+        reader.useLines { lines ->
+            lines.drop(1).forEach { line -> // Skip header row
+                val tokens = line.split(",")
+                if (tokens.size >= 3) {
+                    val placeFromCsv = tokens[0].trim()
+                    val lat = tokens[1].trim().toDoubleOrNull() ?: 0.0
+                    val lng = tokens[2].trim().toDoubleOrNull() ?: 0.0
+
+                    if (places.any { it.equals(placeFromCsv, ignoreCase = true) }) {
+                        placesLatLngList.add(LatLng(lat, lng))
+                    }
+                }
+            }
+        }
+
+        return@withContext placesLatLngList
+    }
+
 
     private fun callAPI(place: String, st: String, et: String) {
 
@@ -209,6 +256,9 @@ class PlanActivity : AppCompatActivity() {
         runOnUiThread {
             myAdapter = PlacesAdapter(this@PlanActivity, placeList, timeList)
             binding.recyclerView.adapter = myAdapter
+
+            mainList = placeList
+
 
             // by map logo
             binding.mapLogo.setOnClickListener {

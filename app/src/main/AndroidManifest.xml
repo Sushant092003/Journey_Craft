@@ -20,14 +20,17 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="tiramisu">
         <activity
+            android:name=".DetailedPlan.NearbyGuidesAndRestaurants"
+            android:exported="false" />
+        <activity
             android:name=".NavBar.PlanHistory"
             android:exported="false" />
         <activity
             android:name=".DetailedPlan.ChatBotActivity"
-            android:exported="true"></activity>
+            android:exported="true" />
         <activity
             android:name=".DetailedPlan.RouteDesigner"
-            android:exported="true"></activity>
+            android:exported="true" />
         <activity
             android:name=".DetailedPlan.PlanActivity"
             android:exported="false" />
