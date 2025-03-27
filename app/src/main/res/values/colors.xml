@@ -22,4 +22,12 @@
     <color name="bg">#1E2027</color>
     <color name="background_blue">#3854FF</color>
 
+
+    <color name="color_textHomeActive">#373737</color>
+    <color name="color_textHomeInactive">#CDCDCD</color>
+    <color name="pluteblue">#333459</color>
+    <color name="pluteyellow">#F6C13F</color>
+
+
+
 </resources>

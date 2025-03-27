@@ -1,0 +1,106 @@
+package com.gmail_bssushant2003.journeycraft.Fragments
+
+import android.os.Bundle
+import android.util.Log
+import androidx.fragment.app.Fragment
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.gmail_bssushant2003.journeycraft.Adapters.GuidesAdapter
+import com.gmail_bssushant2003.journeycraft.Constants.ApiConstants.nearbyRestGuideApiUrl
+import com.gmail_bssushant2003.journeycraft.Constants.ApiService
+import com.gmail_bssushant2003.journeycraft.Models.Guide
+import com.gmail_bssushant2003.journeycraft.Models.LatLng
+import com.gmail_bssushant2003.journeycraft.databinding.FragmentGuidesBinding
+import okhttp3.OkHttpClient
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+
+
+class GuidesFragment : Fragment() {
+
+    private lateinit var binding: FragmentGuidesBinding
+    private lateinit var guidesList : ArrayList<Guide>
+
+    private var placesLatLngList: ArrayList<LatLng>? = null
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        arguments?.let {
+            placesLatLngList = it.getSerializable("placesLatLngList") as? ArrayList<LatLng>
+        }
+    }
+
+    companion object {
+        fun newInstance(placesLatLngList: ArrayList<LatLng>): GuidesFragment {
+            return GuidesFragment().apply {
+                arguments = Bundle().apply {
+                    putSerializable("placesLatLngList", placesLatLngList)
+                }
+            }
+        }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        binding = FragmentGuidesBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        guidesList = arrayListOf()
+
+        binding.guidesRv.layoutManager = LinearLayoutManager(requireContext())
+        val adapter = GuidesAdapter(requireContext(), guidesList)
+        binding.guidesRv.adapter = adapter
+
+        sendLocationsToServer(placesLatLngList, adapter)
+    }
+
+
+    private fun sendLocationsToServer(placesLatLngList: ArrayList<LatLng>?, adapter: GuidesAdapter, ) {
+        RetrofitClient.apiService.findNearbyGuides(placesLatLngList!!).enqueue(object :
+            Callback<List<Guide>> {
+            override fun onResponse(call: Call<List<Guide>>, response: retrofit2.Response<List<Guide>>) {
+                if (response.isSuccessful) {
+                    response.body()?.forEach {
+                        if(it.isAvailable == true){
+                            guidesList.add(it)
+                            adapter.notifyDataSetChanged()
+                        }
+                    }
+                } else {
+                    Log.e("ResponseError", "Error: ${response.errorBody()?.string()}")
+                }
+            }
+
+            override fun onFailure(call: Call<List<Guide>>, t: Throwable) {
+                Log.e("NetworkError", "Failed: ${t.message}")
+            }
+        })
+    }
+
+    object RetrofitClient {
+        private var BASE_URL = nearbyRestGuideApiUrl
+
+        private val retrofit: Retrofit by lazy {
+            Retrofit.Builder()
+                .baseUrl(BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(OkHttpClient())
+                .build()
+        }
+
+        val apiService: ApiService by lazy {
+            retrofit.create(ApiService::class.java)
+        }
+    }
+
+}
