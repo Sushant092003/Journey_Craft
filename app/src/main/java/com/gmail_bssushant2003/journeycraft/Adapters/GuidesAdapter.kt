@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.net.toUri
 import androidx.recyclerview.widget.RecyclerView
+import com.gmail_bssushant2003.journeycraft.GuidesAndRestaurants.DetailedGuideActivity
 import com.gmail_bssushant2003.journeycraft.Models.Guide
 import com.gmail_bssushant2003.journeycraft.databinding.IndividualGuidesItemBinding
 
@@ -28,17 +29,17 @@ class GuidesAdapter(var context : Context, var guidesList : ArrayList<Guide>) : 
         holder.binding.guideName.text = guidesList[position].name
         holder.binding.guideMobileNumber.text = guidesList[position].phoneNo
 
-//        holder.binding.guideCard.setOnClickListener {
-//            val intent = Intent(context, PlanActivity::class.java)
-//            intent.putExtra("tripData", detailedTripRecordList[position].response)
-//            holder.itemView.context.startActivity(intent)
-//        }
-
-        holder.binding.expandCard.setOnClickListener {
-            val intent = Intent(Intent.ACTION_DIAL).apply {
-                data = "tel:${guidesList[position].phoneNo}".toUri()
-            }
+        holder.binding.guideCard.setOnClickListener {
+            val intent = Intent(context, DetailedGuideActivity::class.java)
+            intent.putExtra("guideData", guidesList[position])
             holder.itemView.context.startActivity(intent)
         }
+
+//        holder.binding.expandCard.setOnClickListener {
+//            val intent = Intent(Intent.ACTION_DIAL).apply {
+//                data = "tel:${guidesList[position].phoneNo}".toUri()
+//            }
+//            holder.itemView.context.startActivity(intent)
+//        }
     }
 }

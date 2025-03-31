@@ -1,22 +1,13 @@
 package com.gmail_bssushant2003.journeycraft.DetailedPlan
 
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import com.gmail_bssushant2003.journeycraft.Constants.ApiConstants.nearbyRestGuideApiUrl
-import com.gmail_bssushant2003.journeycraft.Constants.ApiService
 import com.gmail_bssushant2003.journeycraft.Fragments.GuidesFragment
 import com.gmail_bssushant2003.journeycraft.Fragments.RestaurantsFragment
-import com.gmail_bssushant2003.journeycraft.Models.Guide
 import com.gmail_bssushant2003.journeycraft.Models.LatLng
 import com.gmail_bssushant2003.journeycraft.R
-import okhttp3.OkHttpClient
 import com.gmail_bssushant2003.journeycraft.databinding.ActivityNearbyGuidesAndRestaurantsBinding
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 
 class NearbyGuidesAndRestaurants : AppCompatActivity() {
 
@@ -40,7 +31,7 @@ class NearbyGuidesAndRestaurants : AppCompatActivity() {
         binding.bottomBar.onItemSelected = { position ->
             when (position) {
                 0 -> replaceFragment(GuidesFragment.newInstance(placesLatLngList ?: arrayListOf()))
-                1 -> replaceFragment(RestaurantsFragment())
+                1 -> replaceFragment(RestaurantsFragment.newInstance(placesLatLngList ?: arrayListOf()))
             }
         }
 

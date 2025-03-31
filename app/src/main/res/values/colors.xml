@@ -28,6 +28,7 @@
     <color name="pluteblue">#333459</color>
     <color name="pluteyellow">#F6C13F</color>
 
-
+    <color name="gray">#808080</color>
+    <color name="red">#FF5656</color>
 
 </resources>
