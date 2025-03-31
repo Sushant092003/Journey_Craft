@@ -95,11 +95,16 @@ public class InputActivity extends AppCompatActivity {
         findViewById(R.id.add_button_bottom).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(InputActivity.this, PlanActivity.class);
-                intent.putExtra("Place", placeInt);
-                intent.putExtra("StartTime", startTimeString.substring(0, 2));
-                intent.putExtra("EndTime", endTimeString.substring(0,2));
-                startActivity(intent);
+                if(placeInt >= 0 && startTimeString != null && endTimeString != null){
+                    Intent intent = new Intent(InputActivity.this, PlanActivity.class);
+                    intent.putExtra("Place", placeInt);
+                    intent.putExtra("StartTime", startTimeString.substring(0, 2));
+                    intent.putExtra("EndTime", endTimeString.substring(0,2));
+                    startActivity(intent);
+                }else{
+                    Toast.makeText(InputActivity.this,"Please select Start and End time",Toast.LENGTH_SHORT).show();
+                }
+
             }
         });
 
