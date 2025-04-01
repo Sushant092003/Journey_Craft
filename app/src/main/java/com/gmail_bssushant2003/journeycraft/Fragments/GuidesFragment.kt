@@ -10,7 +10,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.gmail_bssushant2003.journeycraft.Adapters.GuidesAdapter
 import com.gmail_bssushant2003.journeycraft.Constants.ApiConstants.nearbyRestGuideApiUrl
 import com.gmail_bssushant2003.journeycraft.Constants.ApiService
-import com.gmail_bssushant2003.journeycraft.GuidesAndRestaurants.CacheManager
 import com.gmail_bssushant2003.journeycraft.Models.Guide
 import com.gmail_bssushant2003.journeycraft.Models.LatLng
 import com.gmail_bssushant2003.journeycraft.databinding.FragmentGuidesBinding
@@ -67,34 +66,22 @@ class GuidesFragment : Fragment() {
 
 
     private fun sendLocationsToServer(placesLatLngList: ArrayList<LatLng>?, adapter: GuidesAdapter, ) {
-
-        val cachedGuides = CacheManager.getCachedGuides(requireContext())
-
-        if (!cachedGuides.isNullOrEmpty()) {
-            guidesList.addAll(cachedGuides)
-            adapter.notifyDataSetChanged()
-        }
-        else{
-            RetrofitClient.apiService.findNearbyGuides(placesLatLngList!!).enqueue(object :
-                Callback<List<Guide>> {
-                override fun onResponse(call: Call<List<Guide>>, response: retrofit2.Response<List<Guide>>) {
-                    if (response.isSuccessful) {
-                        val fetchedData = response.body() ?: emptyList()
-                        guidesList.addAll(fetchedData)
-                        adapter.notifyDataSetChanged()
-
-                        // Save data to cache
-                        CacheManager.saveGuides(requireContext(), fetchedData)
-                    } else {
-                        Log.e("ResponseError", "Error: ${response.errorBody()?.string()}")
-                    }
+        RetrofitClient.apiService.findNearbyGuides(placesLatLngList!!).enqueue(object :
+            Callback<List<Guide>> {
+            override fun onResponse(call: Call<List<Guide>>, response: retrofit2.Response<List<Guide>>) {
+                if (response.isSuccessful) {
+                    val fetchedData = response.body() ?: emptyList()
+                    guidesList.addAll(fetchedData)
+                    adapter.notifyDataSetChanged()
+                } else {
+                    Log.e("ResponseError", "Error: ${response.errorBody()?.string()}")
                 }
+            }
 
-                override fun onFailure(call: Call<List<Guide>>, t: Throwable) {
-                    Log.e("NetworkError", "Failed: ${t.message}")
-                }
-            })
-        }
+            override fun onFailure(call: Call<List<Guide>>, t: Throwable) {
+                Log.e("NetworkError", "Failed: ${t.message}")
+            }
+        })
     }
 
     object RetrofitClient {

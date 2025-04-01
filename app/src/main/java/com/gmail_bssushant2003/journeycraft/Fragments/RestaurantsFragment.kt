@@ -11,7 +11,6 @@ import com.gmail_bssushant2003.journeycraft.Adapters.GuidesAdapter
 import com.gmail_bssushant2003.journeycraft.Adapters.RestaurantsAdapter
 import com.gmail_bssushant2003.journeycraft.Constants.ApiConstants.nearbyRestGuideApiUrl
 import com.gmail_bssushant2003.journeycraft.Constants.ApiService
-import com.gmail_bssushant2003.journeycraft.GuidesAndRestaurants.CacheManager
 import com.gmail_bssushant2003.journeycraft.Models.Guide
 import com.gmail_bssushant2003.journeycraft.Models.LatLng
 import com.gmail_bssushant2003.journeycraft.Models.Restaurant
@@ -69,34 +68,22 @@ class RestaurantsFragment : Fragment() {
     }
 
     private fun sendLocationsToServer(placesLatLngList: ArrayList<LatLng>?, adapter: RestaurantsAdapter) {
-
-        val cachedRestaurants = CacheManager.getCachedRestaurants(requireContext())
-
-        if (!cachedRestaurants.isNullOrEmpty()) {
-            restaurantsList.addAll(cachedRestaurants)
-            adapter.notifyDataSetChanged()
-        }
-        else{
-            RetrofitClient.apiService.findNearbyRestaurants(placesLatLngList!!).enqueue(object :
-                Callback<List<Restaurant>> {
-                override fun onResponse(call: Call<List<Restaurant>>, response: retrofit2.Response<List<Restaurant>>) {
-                    if (response.isSuccessful) {
-                        val fetchedData = response.body() ?: emptyList()
-                        restaurantsList.addAll(fetchedData)
-                        adapter.notifyDataSetChanged()
-
-                        // Save data to cache
-                        CacheManager.saveRestaurants(requireContext(), fetchedData)
-                    } else {
-                        Log.e("ResponseError", "Error: ${response.errorBody()?.string()}")
-                    }
+        RetrofitClient.apiService.findNearbyRestaurants(placesLatLngList!!).enqueue(object :
+            Callback<List<Restaurant>> {
+            override fun onResponse(call: Call<List<Restaurant>>, response: retrofit2.Response<List<Restaurant>>) {
+                if (response.isSuccessful) {
+                    val fetchedData = response.body() ?: emptyList()
+                    restaurantsList.addAll(fetchedData)
+                    adapter.notifyDataSetChanged()
+                } else {
+                    Log.e("ResponseError", "Error: ${response.errorBody()?.string()}")
                 }
+            }
 
-                override fun onFailure(call: Call<List<Restaurant>>, t: Throwable) {
-                    Log.e("NetworkError", "Failed: ${t.message}")
-                }
-            })
-        }
+            override fun onFailure(call: Call<List<Restaurant>>, t: Throwable) {
+                Log.e("NetworkError", "Failed: ${t.message}")
+            }
+        })
     }
 
     object RetrofitClient {
