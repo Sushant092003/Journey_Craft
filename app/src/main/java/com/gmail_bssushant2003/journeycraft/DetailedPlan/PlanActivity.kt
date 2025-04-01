@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.gmail_bssushant2003.journeycraft.Adapters.MyAdapter
 import com.gmail_bssushant2003.journeycraft.Adapters.PlacesAdapter
 import com.gmail_bssushant2003.journeycraft.Constants.ApiConstants
+import com.gmail_bssushant2003.journeycraft.GuidesAndRestaurants.MapsActivity
 import com.gmail_bssushant2003.journeycraft.Models.LatLng
 import com.gmail_bssushant2003.journeycraft.Models.TripRecord
 import com.gmail_bssushant2003.journeycraft.R
@@ -79,7 +80,15 @@ class PlanActivity : AppCompatActivity() {
             updateUI(placesList, timeList)
         }
         else{
-            tempList = arrayListOf("New Palace", "Dajipur Wildlife Sanctuary", "Panhala Fort", "Mahalaxmi temple", "Jyotiba temple", "DYP city mall")
+            tempList = arrayListOf(
+                "Shri Chatrapati Shahu Museum (New Palace)",
+                "Dajipur Wildlife Sanctuary",
+                "Panhala Fort",
+                "Mahalaxmi Temple, Kolhapur",
+                "Jyotiba Temple",
+                "DYP City Mall",
+                "Siddhagiri Museum"
+            )
             callAPI(place.toString(), startTime!!, endTime!!)
         }
 
@@ -252,6 +261,35 @@ class PlanActivity : AppCompatActivity() {
 
     }
 
+    private suspend fun getLatLngForPlace(context: Context, placeName: String): LatLng? = withContext(Dispatchers.IO) {
+        var placeLatLng: LatLng? = null
+
+        val inputStream = context.assets.open("places_lat_lng.csv")
+        val reader = BufferedReader(InputStreamReader(inputStream))
+
+        reader.useLines { lines ->
+            lines.drop(1).forEach { line -> // Skip header row
+                val tokens = line.split("~")
+                if (tokens.size >= 3) {
+                    val placeFromCsv = tokens[0].trim()
+                    val lat = tokens[1].trim().toDoubleOrNull() ?: 0.0
+                    val lng = tokens[2].trim().toDoubleOrNull() ?: 0.0
+
+
+                    // Check if the place name matches
+                    if (placeFromCsv.equals(placeName, ignoreCase = true)) {
+                        placeLatLng = LatLng(lat, lng)
+                    }
+                } else {
+                    Log.e("CSVParser", "Skipping line with invalid format: $line")
+                }
+            }
+        }
+
+        return@withContext placeLatLng
+    }
+
+
     fun updateUI(placeList : ArrayList<String>, timeList : ArrayList<String>) {
         runOnUiThread {
             myAdapter = PlacesAdapter(this@PlanActivity, placeList, timeList)
@@ -267,21 +305,30 @@ class PlanActivity : AppCompatActivity() {
 
             myAdapter.setOnClickListener(object : MyAdapter.OnItemClickListener {
                 override fun onItemClick(position: Int) {
-                    val gmmIntentUri1 =
-                        "https://www.google.com/maps/dir/?api=1&destination=${placeList[position]}".toUri()
+//                    val gmmIntentUri1 =
+//                        "https://www.google.com/maps/dir/?api=1&destination=${placeList[position]}".toUri()
+//
+//                    val mapIntent1 = Intent(Intent.ACTION_VIEW, gmmIntentUri1)
+//
+//                    mapIntent1.`package` = "com.google.android.apps.maps"
+//
+//                    if (mapIntent1.resolveActivity(packageManager) != null) {
+//                        startActivity(mapIntent1)
+//                    } else {
+//                        Toast.makeText(
+//                            this@PlanActivity,
+//                            "Google Maps app is not installed",
+//                            Toast.LENGTH_SHORT
+//                        ).show()
+//                    }
 
-                    val mapIntent1 = Intent(Intent.ACTION_VIEW, gmmIntentUri1)
+                    lifecycleScope.launch {
+                        val placeLatLng = getLatLngForPlace(this@PlanActivity, placeList[position])
+                        val intent = Intent(this@PlanActivity, MapsActivity::class.java)
+                        val googleMapLatLng = com.google.android.gms.maps.model.LatLng(placeLatLng!!.latitude, placeLatLng!!.longitude)
 
-                    mapIntent1.`package` = "com.google.android.apps.maps"
-
-                    if (mapIntent1.resolveActivity(packageManager) != null) {
-                        startActivity(mapIntent1)
-                    } else {
-                        Toast.makeText(
-                            this@PlanActivity,
-                            "Google Maps app is not installed",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        intent.putExtra("placeLatLng", googleMapLatLng)
+                        startActivity(intent)
                     }
                 }
             })

@@ -41,19 +41,18 @@ android {
         viewBinding = true
     }
 }
-
 dependencies {
 
-    implementation ("de.hdodenhof:circleimageview:3.1.0")
+    implementation("de.hdodenhof:circleimageview:3.1.0")
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
     implementation("com.google.maps:google-maps-services:0.14.0")
     implementation("com.google.android.gms:play-services-maps:19.0.0")
-    implementation ("com.google.android.gms:play-services-location:21.3.0")
-    implementation ("com.github.dangiashish:Google-Direction-Api:1.6")
+    implementation("com.google.android.gms:play-services-location:21.3.0")
+    implementation("com.github.dangiashish:Google-Direction-Api:1.6")
 
     implementation("com.github.fornewid:neumorphism:0.3.0")
 
-    //weather
+    // Weather
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation("com.squareup.okhttp3:logging-interceptor:4.9.3")
@@ -69,9 +68,6 @@ dependencies {
     implementation("com.github.MatteoBattilana:WeatherView:3.0.0") {
         exclude(group = "com.github.plattysoft", module = "Leonids")
     }
-
-
-
 
     implementation("androidx.appcompat:appcompat:1.7.0")
     implementation("com.google.android.material:material:1.12.0")
@@ -93,11 +89,8 @@ dependencies {
     implementation("com.opencsv:opencsv:5.6")
     annotationProcessor("com.github.bumptech.glide:compiler:4.14.2")
     implementation("androidx.cardview:cardview:1.0.0")
-    implementation("com.github.bumptech.glide:glide:4.16.0")
-    implementation("androidx.appcompat:appcompat:1.7.0")
-    implementation ("com.github.ibrahimsn98:SmoothBottomBar:1.7.9")
+    implementation("com.github.ibrahimsn98:SmoothBottomBar:1.7.9")
 
-    //DropDown Menu
-    implementation ("com.github.qandeelabbassi:Dropsy:1.1")
-
+    // DropDown Menu
+    implementation("com.github.qandeelabbassi:Dropsy:1.1")
 }

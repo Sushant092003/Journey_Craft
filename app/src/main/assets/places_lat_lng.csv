@@ -1,31 +1,29 @@
-place,lat,lng
-Mahalaxmi Temple,16.7061,84.99
-Panhala Fort,16.802,84.9778
-Rankala Lake,16.690503,74.210578
-Chhatrapati Shahu Museum,16.8003,84.9822
-Kopeshwar Temple,16.615925,74.685549
-Dajipur Wildlife Sanctuary,16.383803,73.863407
-Narsinhwadi Datta Mandir,17.0228,84.7408
-Kaneri Math,16.611909,74.265365
-Shalini Palace,16.8039,84.9936
-Radhanagari Wildlife Sanctuary,16.410533,73.982708
-Teen Darwaza The Triple Gate,23.024421,72.584543
-DYP City Mall,16.703638,74.250528
-Bhagawadi River,16.77,84.97
-Ramling Caves Temple,16.8333,84.7833
-Jyotiba Temple,16.794868,74.17629
-Siddhagiri Gramjivan Museum,16.611509,74.263924
-Dream World Water Park,16.8833,84.8
-Vishalgad Fort,16.90586,73.745828
-Sagareshwar Deer Sanctuary,17.152389,74.378269
-Bhavani Mandap,16.694889,74.224214
-New Palace,16.8003,84.9822
-Bahu Bala Maruti Temple,16.7981,84.9828
-Car Museum,16.81,84.97
-Rajaram Chhatrapati Museum,16.8,84.98
-Mahalaxmi Bazaar,16.8028,84.9872
-Khasbag Garden,18.984414,75.75891
-Kakhachi Wadi,16.8167,84.9778
-Ananta Mahal,30.864612,76.714053
-Jainsagar Lake,16.75,84.8833
-Bhavani Peth,16.8,84.98
+place~lat~lng
+Panhala Fort~16.8094505~74.1000637
+Dajipur Wildlife Sanctuary~16.3837953~73.860825
+Shri Chatrapati Shahu Museum (New Palace)~16.7193678~74.2291601
+Gaganbawada~16.5447518~73.8285768
+Ramtirth Waterfall~16.4336114~72.7355219
+Sagareshwar Deer Sanctuary~17.1524187~74.3756682
+Kopeshwar Temple~16.6429362~74.2807607
+Narsinhwadi Datta Mandir~16.6907382~74.5978754
+Vishalgad~16.906313~73.7407163
+Mahalaxmi Temple, Kolhapur~16.69485745~74.22289466969818
+Binkhambi Ganesh Temple~16.6889259~74.2205831
+Gangagiri Maharaj Math Temple~16.690503~74.210578
+Rankala Lake~16.6887331~74.2056566
+Jyotiba Temple~16.7948584~74.1737387
+Temlabai Mandir~16.7256702~74.2432167
+Siddhagiri Museum~16.6115406~74.2613567
+Chinmaya Ganadhish~16.8179~84.9794
+DYP City Mall~16.7036499~74.2479441
+Sajja Kothi~16.8104~84.9702
+Bhavani Mandap~16.694889~74.224214
+Radhanagari Dam~16.4049127~73.9566919
+Teen Darwaza~23.024421~72.584543
+Botanical Gardens in Kolhapur~16.7113~74.2273
+Khasbag Maidan~18.984414~75.75891
+Gadhinglaj~16.1326~74.4351
+Bhudargarh~16.1492~74.4383
+Shalini Palace~16.6924547~74.2045141
+Irwin Agricultural Museum~16.7022~74.2287
