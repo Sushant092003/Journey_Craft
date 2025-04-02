@@ -1,8 +1,12 @@
 package com.gmail_bssushant2003.journeycraft.GuidesAndRestaurants
 
+import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.Canvas
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import com.gmail_bssushant2003.journeycraft.Fragments.GuideDetailsDialogFragment
 import com.gmail_bssushant2003.journeycraft.Fragments.GuidesFragment.RetrofitClient
 import com.gmail_bssushant2003.journeycraft.Models.Guide
@@ -12,6 +16,7 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import retrofit2.Call
@@ -50,10 +55,11 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     private fun addPinToLocation(guide: Guide) {
         val location = LatLng(guide.latitude, guide.longitude)
 
+
         // Create a custom green marker
         val markerOptions = MarkerOptions()
             .position(location)
-            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))  // Green Pin
+            .icon(resizeMarker(this,R.drawable.ic_guide_icon,120,120))  // Green Pin
 
         googleMap.addMarker(markerOptions)
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 15f))
@@ -97,6 +103,15 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                 Log.e("NetworkError", "Failed: ${t.message}")
             }
         })
+    }
+
+    fun resizeMarker(context: Context, drawableRes: Int, width: Int, height: Int): BitmapDescriptor {
+        val drawable = ContextCompat.getDrawable(context, drawableRes) ?: return BitmapDescriptorFactory.defaultMarker()
+        val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+        val canvas = Canvas(bitmap)
+        drawable.setBounds(0, 0, canvas.width, canvas.height)
+        drawable.draw(canvas)
+        return BitmapDescriptorFactory.fromBitmap(bitmap)
     }
 
 
