@@ -42,7 +42,7 @@ class ChatBotActivity : AppCompatActivity() {
 
         //set up gemini api
         generativeModel = GenerativeModel(
-            modelName = "gemini-pro",
+            modelName = "gemini-1.5-flash",
             apiKey = ApiConstants.geminiApiKey
         )
 

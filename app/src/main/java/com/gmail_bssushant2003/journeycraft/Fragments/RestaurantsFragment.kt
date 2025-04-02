@@ -26,7 +26,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 class RestaurantsFragment : Fragment() {
 
     private lateinit var binding: FragmentRestaurantsBinding
-    private lateinit var restaurantsList : ArrayList<Restaurant>
+    private lateinit var restaurantsList : ArrayList<Pair<LatLng, Restaurant>>
 
     private var placesLatLngList: ArrayList<LatLng>? = null
 
@@ -69,8 +69,8 @@ class RestaurantsFragment : Fragment() {
 
     private fun sendLocationsToServer(placesLatLngList: ArrayList<LatLng>?, adapter: RestaurantsAdapter) {
         RetrofitClient.apiService.findNearbyRestaurants(placesLatLngList!!).enqueue(object :
-            Callback<List<Restaurant>> {
-            override fun onResponse(call: Call<List<Restaurant>>, response: retrofit2.Response<List<Restaurant>>) {
+            Callback<List<Pair<LatLng, Restaurant>>> {
+            override fun onResponse(call: Call<List<Pair<LatLng, Restaurant>>>, response: retrofit2.Response<List<Pair<LatLng, Restaurant>>>) {
                 if (response.isSuccessful) {
                     val fetchedData = response.body() ?: emptyList()
                     restaurantsList.addAll(fetchedData)
@@ -80,7 +80,7 @@ class RestaurantsFragment : Fragment() {
                 }
             }
 
-            override fun onFailure(call: Call<List<Restaurant>>, t: Throwable) {
+            override fun onFailure(call: Call<List<Pair<LatLng, Restaurant>>>, t: Throwable) {
                 Log.e("NetworkError", "Failed: ${t.message}")
             }
         })

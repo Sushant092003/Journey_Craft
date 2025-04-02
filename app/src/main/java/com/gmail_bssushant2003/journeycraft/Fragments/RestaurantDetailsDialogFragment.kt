@@ -4,6 +4,7 @@ import android.app.Dialog
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
@@ -11,30 +12,45 @@ import com.gmail_bssushant2003.journeycraft.Models.Guide
 import com.gmail_bssushant2003.journeycraft.R
 import com.gmail_bssushant2003.journeycraft.databinding.DialogGuideDetailsBinding
 import androidx.core.net.toUri
+import androidx.transition.Visibility
+import com.gmail_bssushant2003.journeycraft.Models.Restaurant
+import com.gmail_bssushant2003.journeycraft.databinding.DialogRestaurantDetailsBinding
 
-class GuideDetailsDialogFragment(private val guide: Guide) : DialogFragment() {
+class RestaurantDetailsDialogFragment(private val restaurant: Restaurant) : DialogFragment() {
 
-    private var _binding: DialogGuideDetailsBinding? = null
+    private var _binding: DialogRestaurantDetailsBinding? = null
     private val binding get() = _binding!!
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return requireActivity().let {
-            _binding = DialogGuideDetailsBinding.inflate(it.layoutInflater)
+            _binding = DialogRestaurantDetailsBinding.inflate(it.layoutInflater)
 
 //            binding.root.setBackgroundResource(android.R.color.transparent)
 
-            binding.name.text = guide.name ?: "XYZ"
-            binding.experience.text = guide.experience.toString()
+            binding.restaurantName.text = restaurant.name ?: "XYZ"
+            binding.rating.text = restaurant.rating.toString()
     //            binding.guideLanguages.text = "Languages: ${it.language ?: "Not specified"}"
-            binding.bio.text = guide.bio
-            binding.phoneNumber.text = guide.phoneNo
+            binding.desciption.text = restaurant.description
+            binding.restaurantNumber.text = restaurant.phoneNo
     //            binding.guideLocation.text = "Location: ${it.latitude}, ${it.longitude}"
 
-            val ph = guide.phoneNo
+            binding.averageCost.text = restaurant.averageCost.toString()
 
-            binding.callButton.setOnClickListener {
+
+            if (restaurant.foodType == Restaurant.FoodType.BOTH) {  // Assuming 'both' means unspecified
+
+            }
+            else if (restaurant.foodType == Restaurant.FoodType.VEG) {
+                binding.nonvegIndicator.visibility = View.GONE
+            }
+            else if (restaurant.foodType == Restaurant.FoodType.NON_VEG) {
+                binding.nonvegIndicator.visibility = View.GONE
+                binding.vegIndicator.setImageResource(R.drawable.ic_nonveg)
+            }
+
+            binding.callIcon.setOnClickListener {
                 val callIntent = Intent(Intent.ACTION_DIAL).apply {
-                    data = "tel:${guide.phoneNo}".toUri()
+                    data = "tel:${restaurant.phoneNo}".toUri()
                 }
                 startActivity(callIntent)
             }

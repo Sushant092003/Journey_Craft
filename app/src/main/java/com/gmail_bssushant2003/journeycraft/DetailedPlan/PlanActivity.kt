@@ -100,15 +100,15 @@ class PlanActivity : AppCompatActivity() {
 
         //help page
         binding.imageViewHelp.setOnClickListener {
-//            startActivity(Intent(this, ChatBotActivity::class.java))
+            startActivity(Intent(this, ChatBotActivity::class.java))
 
-            lifecycleScope.launch {
-                var placesLatLngList = readCSV(this@PlanActivity, mainList)
-                Log.d("Gaurav", placesLatLngList.toString())
-                val intent = Intent(this@PlanActivity, NearbyGuidesAndRestaurants::class.java)
-                intent.putExtra("placesLatLngList", ArrayList(placesLatLngList))
-                startActivity(intent)
-            }
+//            lifecycleScope.launch {
+//                var placesLatLngList = readCSV(this@PlanActivity, mainList)
+//                Log.d("Gaurav", placesLatLngList.toString())
+//                val intent = Intent(this@PlanActivity, NearbyGuidesAndRestaurants::class.java)
+//                intent.putExtra("placesLatLngList", ArrayList(placesLatLngList))
+//                startActivity(intent)
+//            }
 
 
         }
@@ -139,31 +139,31 @@ class PlanActivity : AppCompatActivity() {
     }
 
 
-
-    private suspend fun readCSV(context: Context, places: ArrayList<String>): List<LatLng> = withContext(
-        Dispatchers.IO) {
-        val placesLatLngList = mutableListOf<LatLng>()
-
-        val inputStream = context.assets.open("places_lat_lng.csv")
-        val reader = BufferedReader(InputStreamReader(inputStream))
-
-        reader.useLines { lines ->
-            lines.drop(1).forEach { line -> // Skip header row
-                val tokens = line.split(",")
-                if (tokens.size >= 3) {
-                    val placeFromCsv = tokens[0].trim()
-                    val lat = tokens[1].trim().toDoubleOrNull() ?: 0.0
-                    val lng = tokens[2].trim().toDoubleOrNull() ?: 0.0
-
-                    if (places.any { it.equals(placeFromCsv, ignoreCase = true) }) {
-                        placesLatLngList.add(LatLng(lat, lng))
-                    }
-                }
-            }
-        }
-
-        return@withContext placesLatLngList
-    }
+//
+//    private suspend fun readCSV(context: Context, places: ArrayList<String>): List<LatLng> = withContext(
+//        Dispatchers.IO) {
+//        val placesLatLngList = mutableListOf<LatLng>()
+//
+//        val inputStream = context.assets.open("places_lat_lng.csv")
+//        val reader = BufferedReader(InputStreamReader(inputStream))
+//
+//        reader.useLines { lines ->
+//            lines.drop(1).forEach { line -> // Skip header row
+//                val tokens = line.split("~")
+//                if (tokens.size >= 3) {
+//                    val placeFromCsv = tokens[0].trim()
+//                    val lat = tokens[1].trim().toDoubleOrNull() ?: 0.0
+//                    val lng = tokens[2].trim().toDoubleOrNull() ?: 0.0
+//
+//                    if (places.any { it.equals(placeFromCsv, ignoreCase = true) }) {
+//                        placesLatLngList.add(LatLng(lat, lng))
+//                    }
+//                }
+//            }
+//        }
+//
+//        return@withContext placesLatLngList
+//    }
 
 
     private fun callAPI(place: String, st: String, et: String) {

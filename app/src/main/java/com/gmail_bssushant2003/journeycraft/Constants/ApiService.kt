@@ -13,5 +13,5 @@ interface ApiService {
 
 
     @POST("/public/find-restaurants")
-    fun findNearbyRestaurants(@Body locations: List<LatLng>): Call<List<Restaurant>>
+    fun findNearbyRestaurants(@Body locations: List<LatLng>): Call<List<Pair<LatLng, Restaurant>>>
 }

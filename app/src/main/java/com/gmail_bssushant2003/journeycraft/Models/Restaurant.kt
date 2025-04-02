@@ -17,6 +17,6 @@ data class Restaurant(
     val foodType: FoodType? = null
 ) {
     enum class FoodType {
-        VEG, NON_VEG
+        VEG, NON_VEG, BOTH
     }
 }

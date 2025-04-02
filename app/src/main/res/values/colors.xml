@@ -22,6 +22,8 @@
     <color name="bg">#1E2027</color>
     <color name="background_blue">#3854FF</color>
 
+    <color name="floating_button_blue">#225AE6</color>
+
 
     <color name="color_textHomeActive">#373737</color>
     <color name="color_textHomeInactive">#CDCDCD</color>
