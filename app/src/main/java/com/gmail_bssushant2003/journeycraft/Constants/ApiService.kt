@@ -3,6 +3,7 @@ package com.gmail_bssushant2003.journeycraft.Constants
 import com.gmail_bssushant2003.journeycraft.Models.Guide
 import com.gmail_bssushant2003.journeycraft.Models.LatLng
 import com.gmail_bssushant2003.journeycraft.Models.Restaurant
+import com.gmail_bssushant2003.journeycraft.Models.StreetLocation
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -20,4 +21,7 @@ interface ApiService {
 
     @GET("/public/all-restaurants")
     fun findAllRestaurants() : Call<List<Restaurant>>
+
+    @POST("/api/location/nearby")
+    fun getNearbyLocations(@Body latLng: LatLng) : Call<List<StreetLocation>>
 }

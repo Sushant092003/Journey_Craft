@@ -43,6 +43,10 @@ android {
 }
 dependencies {
 
+
+    implementation ("androidx.core:core-ktx:1.9.0")
+    implementation ("com.google.firebase:firebase-messaging:23.2.1")
+
     implementation("de.hdodenhof:circleimageview:3.1.0")
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
     implementation("com.google.maps:google-maps-services:0.14.0")

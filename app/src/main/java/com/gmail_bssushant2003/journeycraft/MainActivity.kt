@@ -1,6 +1,7 @@
 package com.gmail_bssushant2003.journeycraft
 
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.widget.ImageView
 import android.widget.TextView
@@ -9,6 +10,7 @@ import com.gmail_bssushant2003.journeycraft.DetailedPlan.InputActivity
 import com.gmail_bssushant2003.journeycraft.DetailedPlan.NearbyGuidesAndRestaurants
 import com.gmail_bssushant2003.journeycraft.IntercityTransport.IntercityTransportActivity
 import com.gmail_bssushant2003.journeycraft.MustVisitPlaces.MustVisitPlaces
+import com.gmail_bssushant2003.journeycraft.Notifications.LocationService
 import com.gmail_bssushant2003.journeycraft.Transport.TransportActivity
 import com.gmail_bssushant2003.journeycraft.Weather.Activity.WeatherMainActivity
 import com.gmail_bssushant2003.journeycraft.databinding.ActivityMainBinding

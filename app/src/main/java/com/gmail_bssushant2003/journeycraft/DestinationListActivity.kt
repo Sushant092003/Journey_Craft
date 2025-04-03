@@ -3,6 +3,7 @@ package com.gmail_bssushant2003.journeycraft
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.KeyEvent
@@ -24,6 +25,7 @@ import com.gmail_bssushant2003.journeycraft.Models.Items
 import com.gmail_bssushant2003.journeycraft.Models.Preferences
 import com.gmail_bssushant2003.journeycraft.Models.TripRecord
 import com.gmail_bssushant2003.journeycraft.NavBar.PlanHistory
+import com.gmail_bssushant2003.journeycraft.Notifications.LocationService
 import com.gmail_bssushant2003.journeycraft.Questions.PreferenceActivity
 import com.gmail_bssushant2003.journeycraft.databinding.ActivityDestinationListBinding
 import com.google.android.material.navigation.NavigationView
@@ -53,6 +55,20 @@ class DestinationListActivity : AppCompatActivity() {
 
         //change status bar color to white
         window.statusBarColor = resources.getColor(R.color.white, theme)
+
+        //stop the service
+        binding.notification.setOnClickListener {
+            val intent = Intent(this, LocationService::class.java)
+            stopService(intent)
+        }
+
+        //start the service
+        val intent = Intent(this, LocationService::class.java)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            startForegroundService(intent)
+        } else {
+            startService(intent)
+        }
 
         //retrieve data from intent
         val preferences = intent.getSerializableExtra("preferences") as? Preferences
