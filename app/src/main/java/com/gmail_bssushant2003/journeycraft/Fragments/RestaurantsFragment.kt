@@ -20,32 +20,15 @@ import com.gmail_bssushant2003.journeycraft.databinding.FragmentRestaurantsBindi
 import okhttp3.OkHttpClient
 import retrofit2.Call
 import retrofit2.Callback
+import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 class RestaurantsFragment : Fragment() {
 
     private lateinit var binding: FragmentRestaurantsBinding
-    private lateinit var restaurantsList : ArrayList<Pair<LatLng, Restaurant>>
+    private lateinit var restaurantsList : ArrayList<Restaurant>
 
-    private var placesLatLngList: ArrayList<LatLng>? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            placesLatLngList = it.getSerializable("placesLatLngList") as? ArrayList<LatLng>
-        }
-    }
-
-    companion object {
-        fun newInstance(placesLatLngList: ArrayList<LatLng>): RestaurantsFragment {
-            return RestaurantsFragment().apply {
-                arguments = Bundle().apply {
-                    putSerializable("placesLatLngList", placesLatLngList)
-                }
-            }
-        }
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -61,29 +44,31 @@ class RestaurantsFragment : Fragment() {
         restaurantsList = arrayListOf()
 
         binding.restaurantRv.layoutManager = LinearLayoutManager(requireContext())
-        val adapter = RestaurantsAdapter(requireContext(), restaurantsList)
+        val adapter = RestaurantsAdapter(requireContext(), restaurantsList, parentFragmentManager)
         binding.restaurantRv.adapter = adapter
 
-        sendLocationsToServer(placesLatLngList, adapter)
+        sendLocationsToServer(adapter)
     }
 
-    private fun sendLocationsToServer(placesLatLngList: ArrayList<LatLng>?, adapter: RestaurantsAdapter) {
-        RetrofitClient.apiService.findNearbyRestaurants(placesLatLngList!!).enqueue(object :
-            Callback<List<Pair<LatLng, Restaurant>>> {
-            override fun onResponse(call: Call<List<Pair<LatLng, Restaurant>>>, response: retrofit2.Response<List<Pair<LatLng, Restaurant>>>) {
+    private fun sendLocationsToServer(adapter: RestaurantsAdapter) {
+        RetrofitClient.apiService.findAllRestaurants().enqueue(object :
+            Callback<List<Restaurant>> {
+            override fun onResponse(call: Call<List<Restaurant>>, response: Response<List<Restaurant>>) {
                 if (response.isSuccessful) {
-                    val fetchedData = response.body() ?: emptyList()
-                    restaurantsList.addAll(fetchedData)
-                    adapter.notifyDataSetChanged()
+                    val fetchedRestaurants = response.body() ?: emptyList()
+                    restaurantsList.clear()  // Clear old data
+                    restaurantsList.addAll(fetchedRestaurants)  // Add new data
+                    adapter.notifyDataSetChanged()  // Refresh UI
                 } else {
                     Log.e("ResponseError", "Error: ${response.errorBody()?.string()}")
                 }
             }
 
-            override fun onFailure(call: Call<List<Pair<LatLng, Restaurant>>>, t: Throwable) {
+            override fun onFailure(call: Call<List<Restaurant>>, t: Throwable) {
                 Log.e("NetworkError", "Failed: ${t.message}")
             }
         })
+
     }
 
     object RetrofitClient {

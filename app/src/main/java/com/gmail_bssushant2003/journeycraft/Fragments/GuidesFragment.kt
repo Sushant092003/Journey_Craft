@@ -16,6 +16,7 @@ import com.gmail_bssushant2003.journeycraft.databinding.FragmentGuidesBinding
 import okhttp3.OkHttpClient
 import retrofit2.Call
 import retrofit2.Callback
+import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
@@ -25,24 +26,8 @@ class GuidesFragment : Fragment() {
     private lateinit var binding: FragmentGuidesBinding
     private lateinit var guidesList : ArrayList<Guide>
 
-    private var placesLatLngList: ArrayList<LatLng>? = null
+//    private var placesLatLngList: ArrayList<LatLng>? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            placesLatLngList = it.getSerializable("placesLatLngList") as? ArrayList<LatLng>
-        }
-    }
-
-    companion object {
-        fun newInstance(placesLatLngList: ArrayList<LatLng>): GuidesFragment {
-            return GuidesFragment().apply {
-                arguments = Bundle().apply {
-                    putSerializable("placesLatLngList", placesLatLngList)
-                }
-            }
-        }
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -58,21 +43,21 @@ class GuidesFragment : Fragment() {
         guidesList = arrayListOf()
 
         binding.guidesRv.layoutManager = LinearLayoutManager(requireContext())
-        val adapter = GuidesAdapter(requireContext(), guidesList)
+        val adapter = GuidesAdapter(requireContext(), guidesList, parentFragmentManager)
         binding.guidesRv.adapter = adapter
 
-        sendLocationsToServer(placesLatLngList, adapter)
+        sendLocationsToServer(adapter)
     }
 
 
-    private fun sendLocationsToServer(placesLatLngList: ArrayList<LatLng>?, adapter: GuidesAdapter, ) {
-        RetrofitClient.apiService.findNearbyGuides(placesLatLngList!!).enqueue(object :
-            Callback<List<Guide>> {
-            override fun onResponse(call: Call<List<Guide>>, response: retrofit2.Response<List<Guide>>) {
+    private fun sendLocationsToServer(adapter: GuidesAdapter) {
+        RetrofitClient.apiService.findAllGuides().enqueue(object : Callback<List<Guide>> {
+            override fun onResponse(call: Call<List<Guide>>, response: Response<List<Guide>>) {
                 if (response.isSuccessful) {
-                    val fetchedData = response.body() ?: emptyList()
-                    guidesList.addAll(fetchedData)
-                    adapter.notifyDataSetChanged()
+                    val fetchedGuides = response.body() ?: emptyList()
+                    guidesList.clear()  // Clear old data
+                    guidesList.addAll(fetchedGuides)  // Add new data
+                    adapter.notifyDataSetChanged()  // Refresh RecyclerView
                 } else {
                     Log.e("ResponseError", "Error: ${response.errorBody()?.string()}")
                 }

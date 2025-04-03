@@ -5,13 +5,19 @@ import com.gmail_bssushant2003.journeycraft.Models.LatLng
 import com.gmail_bssushant2003.journeycraft.Models.Restaurant
 import retrofit2.Call
 import retrofit2.http.Body
+import retrofit2.http.GET
 import retrofit2.http.POST
 
 interface ApiService {
     @POST("/public/find-guides")
     fun findNearbyGuides(@Body locations: List<LatLng>): Call<List<Guide>>
 
-
     @POST("/public/find-restaurants")
     fun findNearbyRestaurants(@Body locations: List<LatLng>): Call<List<Pair<LatLng, Restaurant>>>
+
+    @GET("/public/all-guides")
+    fun findAllGuides(): Call<List<Guide>>
+
+    @GET("/public/all-restaurants")
+    fun findAllRestaurants() : Call<List<Restaurant>>
 }

@@ -21,17 +21,16 @@ class NearbyGuidesAndRestaurants : AppCompatActivity() {
         window.statusBarColor = resources.getColor(R.color.appbackcolor1, theme)
 
         //receive latLng list from intent
-        val placesLatLngList = intent.getSerializableExtra("placesLatLngList") as? ArrayList<LatLng>
-
+//        val placesLatLngList = intent.getSerializableExtra("placesLatLngList") as? ArrayList<LatLng>
 
         //set the fragments
-        replaceFragment(GuidesFragment.newInstance(placesLatLngList ?: arrayListOf()))
+        replaceFragment(GuidesFragment())
 
         // Handle bottom navigation item selection
         binding.bottomBar.onItemSelected = { position ->
             when (position) {
-                0 -> replaceFragment(GuidesFragment.newInstance(placesLatLngList ?: arrayListOf()))
-                1 -> replaceFragment(RestaurantsFragment.newInstance(placesLatLngList ?: arrayListOf()))
+                0 -> replaceFragment(GuidesFragment())
+                1 -> replaceFragment(RestaurantsFragment())
             }
         }
 
