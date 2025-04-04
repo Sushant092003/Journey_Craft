@@ -51,23 +51,44 @@ class RestaurantsFragment : Fragment() {
     }
 
     private fun sendLocationsToServer(adapter: RestaurantsAdapter) {
-        RetrofitClient.apiService.findAllRestaurants().enqueue(object :
-            Callback<List<Restaurant>> {
-            override fun onResponse(call: Call<List<Restaurant>>, response: Response<List<Restaurant>>) {
-                if (response.isSuccessful) {
-                    val fetchedRestaurants = response.body() ?: emptyList()
-                    restaurantsList.clear()  // Clear old data
-                    restaurantsList.addAll(fetchedRestaurants)  // Add new data
-                    adapter.notifyDataSetChanged()  // Refresh UI
-                } else {
-                    Log.e("ResponseError", "Error: ${response.errorBody()?.string()}")
+
+        val ref = com.google.firebase.database.FirebaseDatabase
+            .getInstance()
+            .getReference("restaurants")  // Make sure this matches your Firebase node
+
+        ref.addValueEventListener(object : com.google.firebase.database.ValueEventListener {
+            override fun onDataChange(snapshot: com.google.firebase.database.DataSnapshot) {
+                restaurantsList.clear()
+                for (restaurantSnapshot in snapshot.children) {
+                    val restaurant = restaurantSnapshot.getValue(Restaurant::class.java)
+                    restaurant?.let { restaurantsList.add(it) }
                 }
+                adapter.notifyDataSetChanged()
             }
 
-            override fun onFailure(call: Call<List<Restaurant>>, t: Throwable) {
-                Log.e("NetworkError", "Failed: ${t.message}")
+            override fun onCancelled(error: com.google.firebase.database.DatabaseError) {
+                Log.e("FirebaseError", "Error: ${error.message}")
             }
         })
+
+
+//        RetrofitClient.apiService.findAllRestaurants().enqueue(object :
+//            Callback<List<Restaurant>> {
+//            override fun onResponse(call: Call<List<Restaurant>>, response: Response<List<Restaurant>>) {
+//                if (response.isSuccessful) {
+//                    val fetchedRestaurants = response.body() ?: emptyList()
+//                    restaurantsList.clear()  // Clear old data
+//                    restaurantsList.addAll(fetchedRestaurants)  // Add new data
+//                    adapter.notifyDataSetChanged()  // Refresh UI
+//                } else {
+//                    Log.e("ResponseError", "Error: ${response.errorBody()?.string()}")
+//                }
+//            }
+//
+//            override fun onFailure(call: Call<List<Restaurant>>, t: Throwable) {
+//                Log.e("NetworkError", "Failed: ${t.message}")
+//            }
+//        })
 
     }
 

@@ -1,14 +1,11 @@
 package com.gmail_bssushant2003.journeycraft.Adapters
 
 import android.content.Context
-import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.core.net.toUri
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import com.gmail_bssushant2003.journeycraft.Fragments.GuideDetailsDialogFragment
-import com.gmail_bssushant2003.journeycraft.GuidesAndRestaurants.DetailedGuideActivity
 import com.gmail_bssushant2003.journeycraft.Models.Guide
 import com.gmail_bssushant2003.journeycraft.databinding.IndividualGuidesItemBinding
 

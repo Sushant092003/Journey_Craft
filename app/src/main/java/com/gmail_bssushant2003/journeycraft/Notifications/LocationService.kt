@@ -18,6 +18,7 @@ import com.gmail_bssushant2003.journeycraft.Constants.ApiService
 import com.gmail_bssushant2003.journeycraft.Models.LatLng
 import com.google.android.gms.location.*
 import com.gmail_bssushant2003.journeycraft.Models.StreetLocation
+import com.google.firebase.database.FirebaseDatabase
 import kotlinx.coroutines.*
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -26,7 +27,6 @@ class LocationService : Service() {
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var locationCallback: LocationCallback
-    private val lastNotificationTimes = mutableMapOf<String, Long>()
     private val apiService: ApiService
 
     private var lastKnownLocation: Location? = null // 🔹 Store last known location
@@ -111,12 +111,45 @@ class LocationService : Service() {
                     }
                 } else {
                     Log.e("LocationService", "API call failed: ${response.errorBody()?.string()}")
+                    fetchFromFirebase(location)
                 }
             } catch (e: Exception) {
                 Log.e("LocationService", "API request error: ${e.message}")
+                fetchFromFirebase(location)
             }
         }
     }
+
+    private fun fetchFromFirebase(userLocation: Location) {
+        val databaseRef = FirebaseDatabase.getInstance().getReference("streetLocations")
+        databaseRef.get().addOnSuccessListener { dataSnapshot ->
+            val nearbyLocations = mutableListOf<StreetLocation>()
+
+            for (snapshot in dataSnapshot.children) {
+                val streetLocation = snapshot.getValue(StreetLocation::class.java)
+                streetLocation?.let {
+                    val result = FloatArray(1)
+                    Location.distanceBetween(
+                        userLocation.latitude,
+                        userLocation.longitude,
+                        it.lat ?: 0.0,
+                        it.lng ?: 0.0,
+                        result
+                    )
+
+                    if (result[0] <= 500) {
+                        nearbyLocations.add(it)
+                    }
+                }
+            }
+
+            // Now check proximity with these
+            checkProximity(userLocation, nearbyLocations)
+        }.addOnFailureListener {
+            Log.e("FirebaseFallback", "Failed to fetch from Firebase: ${it.message}")
+        }
+    }
+
 
     private fun checkProximity(location: Location, places: List<StreetLocation>) {
         val notifiedPlaces = mutableListOf<String>()

@@ -3,6 +3,8 @@ package com.gmail_bssushant2003.journeycraft.GuidesAndRestaurants
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
+import android.view.View
+import android.location.Location
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
@@ -13,6 +15,7 @@ import com.gmail_bssushant2003.journeycraft.Fragments.GuidesFragment.RetrofitCli
 import com.gmail_bssushant2003.journeycraft.Fragments.RestaurantDetailsDialogFragment
 import com.gmail_bssushant2003.journeycraft.Models.Guide
 import com.gmail_bssushant2003.journeycraft.Models.Restaurant
+import com.gmail_bssushant2003.journeycraft.Models.RestaurantFirebase
 import com.gmail_bssushant2003.journeycraft.R
 import com.gmail_bssushant2003.journeycraft.databinding.ActivityMapsBinding
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -25,7 +28,13 @@ import com.google.android.gms.maps.model.MarkerOptions
 import retrofit2.Call
 import retrofit2.Callback
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import kotlinx.coroutines.launch
+import retrofit2.Response
+import kotlin.math.ln
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
@@ -57,8 +66,10 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         val placeLatLngList : ArrayList<com.gmail_bssushant2003.journeycraft.Models.LatLng> = arrayListOf(com.gmail_bssushant2003.journeycraft.Models.LatLng(placeLatLng.latitude, placeLatLng.longitude))
 
         lifecycleScope.launch {
+            showLoadingBar(true)
             sendLocationsToServerForGuide(placeLatLngList)
             sendLocationToServerForRestaurant(placeLatLngList)
+            showLoadingBar(false)
         }
 
         googleMap.setOnMarkerClickListener { marker ->
@@ -73,30 +84,123 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
-    private suspend fun sendLocationToServerForRestaurant(placeLatLngList: java.util.ArrayList<com.gmail_bssushant2003.journeycraft.Models.LatLng>) {
-        RetrofitClient.apiService.findNearbyRestaurants(placeLatLngList).enqueue(object :
-            Callback<List<Pair<com.gmail_bssushant2003.journeycraft.Models.LatLng, Restaurant>>> {
-            override fun onResponse(call: Call<List<Pair<com.gmail_bssushant2003.journeycraft.Models.LatLng, Restaurant>>>, response: retrofit2.Response<List<Pair<com.gmail_bssushant2003.journeycraft.Models.LatLng, Restaurant>>>) {
-                if (response.isSuccessful) {
-                    val fetchedData = response.body() ?: emptyList()
-                    restaurantList.addAll(fetchedData)
-                } else {
-                    Log.e("ResponseError", "Error: ${response.errorBody()?.string()}")
+    private fun showLoadingBar(isVisible: Boolean) {
+        binding.loadingBar.visibility = if (isVisible) View.VISIBLE else View.GONE
+    }
+
+
+    private suspend fun sendLocationToServerForRestaurant(placeLatLngList: ArrayList<com.gmail_bssushant2003.journeycraft.Models.LatLng>) {
+        val restaurantList = mutableListOf<Pair<com.gmail_bssushant2003.journeycraft.Models.LatLng, Restaurant>>()
+
+        try {
+            RetrofitClient.apiService.findNearbyRestaurants(placeLatLngList).enqueue(object :
+                Callback<List<Pair<com.gmail_bssushant2003.journeycraft.Models.LatLng, Restaurant>>> {
+                override fun onResponse(
+                    call: Call<List<Pair<com.gmail_bssushant2003.journeycraft.Models.LatLng, Restaurant>>>,
+                    response: Response<List<Pair<com.gmail_bssushant2003.journeycraft.Models.LatLng, Restaurant>>>
+                ) {
+                    if (response.isSuccessful) {
+                        val fetchedData = response.body() ?: emptyList()
+                        restaurantList.addAll(fetchedData)
+
+                        for (restaurant in restaurantList) {
+                            Log.d("Gaurav", "Restaurant Name: ${restaurant.second.name}")
+                            addPinToRestaurantLocation(restaurant)
+                        }
+                    } else {
+                        Log.e("ResponseError", "API failed: ${response.errorBody()?.string()}")
+                        fetchRestFromFirebaseFallback(placeLatLngList)
+                    }
                 }
 
-                for (restaurant in restaurantList) {
-                    Log.d("Gaurav", "Restaurant Name: ${restaurant.second.name}")
-                    addPinToRestaurantLocation(restaurant)
+                override fun onFailure(
+                    call: Call<List<Pair<com.gmail_bssushant2003.journeycraft.Models.LatLng, Restaurant>>>,
+                    t: Throwable
+                ) {
+                    Log.e("NetworkError", "Failed: ${t.message}")
+                    fetchRestFromFirebaseFallback(placeLatLngList)
+                }
+            })
+        } catch (e: Exception) {
+            Log.e("Exception", "Error: ${e.message}")
+            fetchRestFromFirebaseFallback(placeLatLngList)
+        }
+    }
+
+    private fun fetchRestFromFirebaseFallback(placeLatLngList: ArrayList<com.gmail_bssushant2003.journeycraft.Models.LatLng>) {
+        val ref = FirebaseDatabase.getInstance().getReference("restaurants")
+        ref.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                for (child in snapshot.children) {
+                    val restaurantFirebase = child.getValue(RestaurantFirebase::class.java)
+                    if (restaurantFirebase != null) {
+                        val lat = restaurantFirebase.latitude ?: 0.0
+                        val lng = restaurantFirebase.longitude ?: 0.0
+
+                        for (latLng in placeLatLngList) {
+                            val distanceResult = FloatArray(1)
+                            Location.distanceBetween(
+                                latLng.latitude, latLng.longitude,
+                                lat,
+                                lng,
+                                distanceResult
+                            )
+
+                            if (distanceResult[0] <= 10_000) { // 10km radius
+                                // 🔄 Convert RestaurantFirebase → Restaurant
+                                val restaurant = Restaurant(
+                                    id = restaurantFirebase.id ?: 0,
+                                    name = restaurantFirebase.name ?: "Unknown",
+                                    description = restaurantFirebase.description ?: "",
+                                    rating = restaurantFirebase.rating ?: 0.0,
+                                    phoneNo = restaurantFirebase.phoneNo ?: "999999999",
+                                    openTime = restaurantFirebase.openTime ?: "10:10",
+                                    closeTime = restaurantFirebase.closeTime ?: "10:10",
+                                    fssaiLicense = restaurantFirebase.fssaiLicense ?: "142424",
+                                    locationLink = restaurantFirebase.locationLink ?: "",
+                                    averageCost = restaurantFirebase.averageCost ?: 500.0,
+
+                                    foodType = try {
+                                        Restaurant.FoodType.valueOf((restaurantFirebase.foodType ?: "BOTH").toString())
+                                    } catch (e: Exception) {
+                                        Restaurant.FoodType.BOTH
+                                    }                                )
+
+                                restaurantList.add(Pair(com.gmail_bssushant2003.journeycraft.Models.LatLng(lat, lng), restaurant))
+                                Log.d("Gaurav", "Restaurant from Firebase: ${restaurant.name}")
+                                addPinToRestaurantLocation(Pair(com.gmail_bssushant2003.journeycraft.Models.LatLng(lat, lng), restaurant))
+                            }
+                        }
+                    }
                 }
             }
 
-            override fun onFailure(call: Call<List<Pair<com.gmail_bssushant2003.journeycraft.Models.LatLng, Restaurant>>>, t: Throwable) {
-                Log.e("NetworkError", "Failed: ${t.message}")
+            override fun onCancelled(error: DatabaseError) {
+                Log.e("FirebaseError", "Failed: ${error.message}")
             }
         })
     }
 
+
+
     private fun addPinToRestaurantLocation(restaurant: Pair<com.gmail_bssushant2003.journeycraft.Models.LatLng, Restaurant>) {
+        val location = LatLng(restaurant.first.latitude, restaurant.first.longitude)
+
+
+        // Create a custom green marker
+        val markerOptions = MarkerOptions()
+            .position(location)
+            .icon(resizeMarker(this,R.drawable.restaurant_pin,120,120))  // Green Pin
+
+        googleMap.addMarker(markerOptions)
+
+
+        val marker = googleMap.addMarker(markerOptions)
+        marker?.tag = restaurant.second
+
+    }
+
+    private fun addPinToRestaurantLocationFirebase(restaurant: Pair<com.gmail_bssushant2003.journeycraft.Models.LatLng, RestaurantFirebase>) {
         val location = LatLng(restaurant.first.latitude, restaurant.first.longitude)
 
 
@@ -141,27 +245,65 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
 
     private suspend fun sendLocationsToServerForGuide(placesLatLngList: ArrayList<com.gmail_bssushant2003.journeycraft.Models.LatLng>?) {
-        RetrofitClient.apiService.findNearbyGuides(placesLatLngList!!).enqueue(object :
-            Callback<List<Guide>> {
-            override fun onResponse(call: Call<List<Guide>>, response: retrofit2.Response<List<Guide>>) {
-                if (response.isSuccessful) {
-                    val fetchedData = response.body() ?: emptyList()
-                    guideList.addAll(fetchedData)
-                } else {
-                    Log.e("ResponseError", "Error: ${response.errorBody()?.string()}")
+        try {
+            RetrofitClient.apiService.findNearbyGuides(placesLatLngList!!).enqueue(object :
+                Callback<List<Guide>> {
+                override fun onResponse(call: Call<List<Guide>>, response: retrofit2.Response<List<Guide>>) {
+                    if (response.isSuccessful) {
+                        val fetchedData = response.body() ?: emptyList()
+                        guideList.addAll(fetchedData)
+
+                        for (guide in guideList) {
+                            Log.d("Gaurav", "Guide Name: ${guide.name}")
+                            addPinToGuideLocation(guide)
+                        }
+                    } else {
+                        Log.e("GuideAPI", "API failed: ${response.errorBody()?.string()}")
+                        fetchGuidesFromFirebase(placesLatLngList)
+                    }
                 }
 
-                for (guide in guideList) {
-                    Log.d("Gaurav", "Guide Name: ${guide.name}")
-                    addPinToGuideLocation(guide)
+                override fun onFailure(call: Call<List<Guide>>, t: Throwable) {
+                    Log.e("GuideAPI", "API error: ${t.message}")
+                    fetchGuidesFromFirebase(placesLatLngList)
                 }
-            }
-
-            override fun onFailure(call: Call<List<Guide>>, t: Throwable) {
-                Log.e("NetworkError", "Failed: ${t.message}")
-            }
-        })
+            })
+        } catch (e: Exception) {
+            Log.e("GuideAPI", "Exception: ${e.message}")
+            fetchGuidesFromFirebase(placesLatLngList!!)
+        }
     }
+
+    private fun fetchGuidesFromFirebase(placesLatLngList: ArrayList<com.gmail_bssushant2003.journeycraft.Models.LatLng>) {
+        val ref = FirebaseDatabase.getInstance().getReference("guides")
+
+        ref.get().addOnSuccessListener { snapshot ->
+            for (guideSnap in snapshot.children) {
+                val guide = guideSnap.getValue(Guide::class.java)
+                guide?.let {
+                    for (latLng in placesLatLngList) {
+                        val distanceResult = FloatArray(1)
+                        Location.distanceBetween(
+                            latLng.latitude, latLng.longitude,
+                            it.latitude ?: 0.0,
+                            it.longitude ?: 0.0,
+                            distanceResult
+                        )
+
+                        if (distanceResult[0] <= 10_000) { // 10km radius
+                            guideList.add(it)
+                            Log.d("Gaurav", "Guide from Firebase: ${it.name}")
+                            addPinToGuideLocation(it)
+                        }
+                    }
+                }
+            }
+        }.addOnFailureListener {
+            Log.e("FirebaseFallback", "Failed to fetch guides from Firebase: ${it.message}")
+        }
+    }
+
+
 
     fun resizeMarker(context: Context, drawableRes: Int, width: Int, height: Int): BitmapDescriptor {
         val drawable = ContextCompat.getDrawable(context, drawableRes) ?: return BitmapDescriptorFactory.defaultMarker()

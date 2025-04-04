@@ -51,22 +51,43 @@ class GuidesFragment : Fragment() {
 
 
     private fun sendLocationsToServer(adapter: GuidesAdapter) {
-        RetrofitClient.apiService.findAllGuides().enqueue(object : Callback<List<Guide>> {
-            override fun onResponse(call: Call<List<Guide>>, response: Response<List<Guide>>) {
-                if (response.isSuccessful) {
-                    val fetchedGuides = response.body() ?: emptyList()
-                    guidesList.clear()  // Clear old data
-                    guidesList.addAll(fetchedGuides)  // Add new data
-                    adapter.notifyDataSetChanged()  // Refresh RecyclerView
-                } else {
-                    Log.e("ResponseError", "Error: ${response.errorBody()?.string()}")
+
+
+        val ref = com.google.firebase.database.FirebaseDatabase
+            .getInstance()
+            .getReference("guides")
+
+        ref.addValueEventListener(object : com.google.firebase.database.ValueEventListener {
+            override fun onDataChange(snapshot: com.google.firebase.database.DataSnapshot) {
+                guidesList.clear()
+                for (guideSnapshot in snapshot.children) {
+                    val guide = guideSnapshot.getValue(Guide::class.java)
+                    guide?.let { guidesList.add(it) }
                 }
+                adapter.notifyDataSetChanged()
             }
 
-            override fun onFailure(call: Call<List<Guide>>, t: Throwable) {
-                Log.e("NetworkError", "Failed: ${t.message}")
+            override fun onCancelled(error: com.google.firebase.database.DatabaseError) {
+                Log.e("FirebaseError", "Error: ${error.message}")
             }
         })
+
+//        RetrofitClient.apiService.findAllGuides().enqueue(object : Callback<List<Guide>> {
+//            override fun onResponse(call: Call<List<Guide>>, response: Response<List<Guide>>) {
+//                if (response.isSuccessful) {
+//                    val fetchedGuides = response.body() ?: emptyList()
+//                    guidesList.clear()  // Clear old data
+//                    guidesList.addAll(fetchedGuides)  // Add new data
+//                    adapter.notifyDataSetChanged()  // Refresh RecyclerView
+//                } else {
+//                    Log.e("ResponseError", "Error: ${response.errorBody()?.string()}")
+//                }
+//            }
+//
+//            override fun onFailure(call: Call<List<Guide>>, t: Throwable) {
+//                Log.e("NetworkError", "Failed: ${t.message}")
+//            }
+//        })
     }
 
     object RetrofitClient {
